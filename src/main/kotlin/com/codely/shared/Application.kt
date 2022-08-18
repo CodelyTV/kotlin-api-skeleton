@@ -1,4 +1,4 @@
-package com.codely.api
+package com.codely.shared
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
