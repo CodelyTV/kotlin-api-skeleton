@@ -31,7 +31,6 @@ val testIntegrationImplementation: Configuration by configurations.getting {
 
 configurations["testIntegrationRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
 
-
 val integrationTest = task<Test>("integrationTest") {
     description = "Runs integration tests."
     group = "verification"
@@ -40,7 +39,6 @@ val integrationTest = task<Test>("integrationTest") {
     useJUnitPlatform()
     shouldRunAfter("test")
 }
-
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -82,7 +80,6 @@ spotless {
 }
 
 tasks.check {
-    dependsOn(tasks.spotlessCheck)
     dependsOn(integrationTest)
+    dependsOn(tasks.spotlessCheck)
 }
-
