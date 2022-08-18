@@ -1,1 +1,2 @@
-rootProject.name = "kotlin-basic-skeleton"
+rootProject.name = "kotlin-api-skeleton"
+

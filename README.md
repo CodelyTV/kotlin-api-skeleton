@@ -4,10 +4,13 @@
 
 ## Introduction
 
-This is a repository intended to serve as a starting point if you want to bootstrap a project in Kotlin.
+This is a repository intended to serve as a starting point if you want to bootstrap an API in Kotlin.
 
 It could be useful if you want to start from scratch a kata or a little exercise or project. The idea is that you don't have to worry about the boilerplate
 * Latest stable kotlin version
+* Latest stable Springboot version
+* Latest stable Springboot version
+* Latest stable java version
 * Best practices applied:
     * [`README.md`][link-readme]
     * [`LICENSE`][link-license]
