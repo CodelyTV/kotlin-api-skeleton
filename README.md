@@ -31,22 +31,18 @@ It could be useful if you want to start from scratch a kata or a little exercise
 * Latest stable Springboot version
 * Latest stable Springboot version
 * Latest stable java version
-* Best practices applied:
-    * [`README.md`][link-readme]
-    * [`LICENSE`][link-license]
-    * [`build.gradle.kts`][link-build-gradle]
-    * [`.gitignore`][link-gitignore]
+* Best practices applied
 * Some useful resources to start coding
 
 ## 🌎 How To Start
 
-You could manually clone [this repo](https://github.com/CodelyTV/kotlin-basic-skeleton) or just us it as a template
+You could manually clone [this repo](https://github.com/CodelyTV/kotlin-api-skeleton) or just us it as a template
 
 ### Cloning the repository
 
 We recommend to follow the next step by step process in order to avoid adding the bootstrap project commits to your project Git history:
 
-1. [Use this repositoy template](https://github.com/CodelyTV/kotlin-basic-skeleton/generate)
+1. [Use this repositoy template](https://github.com/CodelyTV/kotlin-api-skeleton/generate)
 2. Clone your project
 3. Move to the project directory: `cd your-project-name`
 4. Build the project for the first time: `./gradlew build`
