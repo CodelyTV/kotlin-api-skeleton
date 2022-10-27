@@ -24,7 +24,7 @@
 
 This is a repository intended to serve as a starting point if you want to bootstrap an API in Kotlin.
 
-## Introduction
+## ☝️ Introduction
 
 It could be useful if you want to start from scratch a kata or a little exercise or project. The idea is that you don't have to worry about the boilerplate
 * Latest stable kotlin version
@@ -38,7 +38,7 @@ It could be useful if you want to start from scratch a kata or a little exercise
     * [`.gitignore`][link-gitignore]
 * Some useful resources to start coding
 
-## How To Start
+## 🌎 How To Start
 
 You could manually clone [this repo](https://github.com/CodelyTV/kotlin-basic-skeleton) or just us it as a template
 
@@ -49,14 +49,14 @@ We recommend to follow the next step by step process in order to avoid adding th
 1. [Use this repositoy template](https://github.com/CodelyTV/kotlin-basic-skeleton/generate)
 2. Clone your project
 3. Move to the project directory: `cd your-project-name`
-5. Build the project for the first time: `./gradlew build`
-6. Run all the checks: `./gradlew check`. This will do some checks that you can perform with isolated commands:
+4. Build the project for the first time: `./gradlew build`
+5. Run all the checks: `./gradlew check`. This will do some checks that you can perform with isolated commands:
     1. [Klint](https://ktlint.github.io/) using [Spotless](https://github.com/diffplug/spotless): `./gradlew spotlessCheck`. If you want to fix style issues automatically: `./gradlew spotlessApply`.
     2. [Kotlin test](https://kotlinlang.org/api/latest/kotlin.test/): `./gradlew test`.
-7. To just run the project execute: `./gradlew run`
+6. To just run the project execute: `./gradlew run`
 7. Start coding!
 
-## Helpful resources
+## 👌 Helpful resources
 
 ### Kotlin
 
@@ -67,12 +67,6 @@ We recommend to follow the next step by step process in order to avoid adding th
 
 * [Test code using JUnit in JVM - tutorial](https://kotlinlang.org/docs/jvm-test-using-junit.html)
 * [JUnit5 assertions](https://junit.org/junit5/docs/5.0.1/api/org/junit/jupiter/api/Assertions.html)
-
-## About
-
-This hopefully helpful utility has been developed by [CodelyTV][link-author] and [contributors][link-contributors].
-
-We'll try to maintain this project as simple as possible, but Pull Requests are welcome!
 
 ## 👌 Codely Code Quality Standards
 
