@@ -68,22 +68,37 @@ We recommend to follow the next step by step process in order to avoid adding th
 * [Test code using JUnit in JVM - tutorial](https://kotlinlang.org/docs/jvm-test-using-junit.html)
 * [JUnit5 assertions](https://junit.org/junit5/docs/5.0.1/api/org/junit/jupiter/api/Assertions.html)
 
-
 ## About
 
 This hopefully helpful utility has been developed by [CodelyTV][link-author] and [contributors][link-contributors].
 
 We'll try to maintain this project as simple as possible, but Pull Requests are welcome!
 
-## License
+## 👌 Codely Code Quality Standards
 
-The MIT License (MIT). Please see [License File][link-license] for more information.
+Publishing this package we are committing ourselves to the following code quality standards:
 
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+- 🤝 Respect **Semantic Versioning**: No breaking changes in patch or minor versions
+- 🤏 No surprises in transitive dependencies: Use the **bare minimum dependencies** needed to meet the purpose
+- 🎯 **One specific purpose** to meet without having to carry a bunch of unnecessary other utilities
+- ✅ **Tests** as documentation and usage examples
+- 📖 **Well documented ReadMe** showing how to install and use
+- ⚖️ **License favoring Open Source** and collaboration
 
-[link-license]: LICENSE
-[link-readme]: README.md
-[link-gitignore]: .gitignore
-[link-build-gradle]: build.gradle.kts
-[link-author]: https://github.com/CodelyTV
-[link-contributors]: https://github.com/CodelyTV/kotlin-basic-skeleton/graphs/contributors
+## 🔀 Related skeleton templates
+
+Opinionated TypeScript skeletons ready for different purposes:
+
+- [🔷🌱 TypeScript Basic Skeleton](https://github.com/CodelyTV/typescript-basic-skeleton)
+- [🔷🕸️ TypeScript Web Skeleton](https://github.com/CodelyTV/typescript-web-skeleton)
+- [🔷🌍 TypeScript API Skeleton](https://github.com/CodelyTV/typescript-api-skeleton)
+- [🔷✨ TypeScript DDD Skeleton](https://github.com/CodelyTV/typescript-ddd-skeleton)
+
+This very same basic skeleton philosophy implemented in other programming languages:
+
+- [✨ JavaScript Basic Skeleton](https://github.com/CodelyTV/javascript-basic-skeleton)
+- [☕ Java Basic Skeleton](https://github.com/CodelyTV/java-basic-skeleton)
+- [📍 Kotlin Basic Skeleton](https://github.com/CodelyTV/kotlin-basic-skeleton)
+- [🧬 Scala Basic Skeleton](https://github.com/CodelyTV/scala-basic-skeleton)
+- [🦈 C# Basic Skeleton](https://github.com/CodelyTV/csharp-basic-skeleton)
+- [🐘 PHP Basic Skeleton](https://github.com/CodelyTV/php-basic-skeleton)
