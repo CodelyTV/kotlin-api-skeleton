@@ -1,4 +1,4 @@
-## Table Tennis Booking API
+## 🏓🏓 Table Tennis Reservation API 🏓🏓
 
 <p align="center">
   <img src="src/main/resources/logo/tt-logo.png" alt="Table Tennis API Logo">
