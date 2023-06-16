@@ -1,7 +1,7 @@
 ## Table Tennis Booking API
 
 <p align="center">
-  <img src="tt-logo.png" alt="Table Tennis API Logo">
+  <img src="src/main/resources/logo/tt-logo.png" alt="Table Tennis API Logo">
 </p>
 
 The Booking Table API allows you to manage reservations for tables in Table Tennis Sant Andreu clubhouse.
