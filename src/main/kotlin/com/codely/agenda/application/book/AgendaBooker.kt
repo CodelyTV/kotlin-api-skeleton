@@ -15,7 +15,7 @@ import java.util.UUID
 context(AgendaRepository)
 suspend fun book(id: UUID, name: PlayerName, hourId: UUID): Either<BookAgendaError, Agenda> =
     findByOrElse(Id(id), onError = { AgendaNotFound })
-        .map { agenda -> agenda.addPlayer(hourId, name) }
+        .flatMap { agenda -> agenda.bookAvailableHour(hourId, name) }
         .flatMap { agenda -> agenda.saveOrElse { error -> Unknown(error) } }
 
 

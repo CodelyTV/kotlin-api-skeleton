@@ -23,7 +23,7 @@ object AvailableHourMother {
         PlayerName("Marcel"),
         PlayerName("Tino"),
         PlayerName("Txus"),
-        PlayerName("Rafa"),
+        PlayerName("Exposito"),
         PlayerName("Carlos"),
         PlayerName("Lucas"),
         PlayerName("Maria"),

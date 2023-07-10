@@ -1,5 +1,9 @@
 package com.codely.agenda.domain
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import com.codely.agenda.application.book.BookAgendaError
 import com.codely.shared.clock.currentMonth
 import com.codely.shared.clock.currentYear
 import kotlinx.datetime.Month
@@ -25,6 +29,34 @@ data class Agenda(
                 7 -> Agenda(id, day, currentMonth(), currentYear(), emptyList())
                 else -> TODO()
             }
+    }
+
+    fun bookAvailableHour(
+        availableHourId: UUID,
+        playerName: PlayerName
+    ): Either<BookAgendaError, Agenda> {
+        val availableHour = availableHours.find { it.id == availableHourId }
+
+        return availableHour?.let {
+            val updatedPlayers = it.players.toMutableList()
+
+            if (updatedPlayers.contains(playerName)) {
+                return BookAgendaError.PlayerAlreadyBooked.left()
+            }
+
+            if (updatedPlayers.size >= it.capacity.value) {
+                return BookAgendaError.MaxCapacityReached.left()
+            }
+
+            updatedPlayers.add(playerName)
+            val updatedAvailableHour = it.copy(players = updatedPlayers)
+            val updatedAvailableHours = availableHours.toMutableList().apply {
+                val index = indexOf(it)
+                set(index, updatedAvailableHour)
+            }
+
+            copy(availableHours = updatedAvailableHours).right()
+        } ?: BookAgendaError.AgendaNotFound.left()
     }
     
     fun addPlayer(hourId: UUID, player: PlayerName): Agenda {

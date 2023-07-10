@@ -26,7 +26,7 @@ import java.util.*
 class BookAgendaController(private val repository: AgendaRepository) {
 
     @PostMapping("/agenda/{id}/book")
-    fun bookAgenda(@PathVariable id: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
+    suspend fun bookAgenda(@PathVariable id: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
             handle(BookAgendaCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName))
                 .toServerResponse(
