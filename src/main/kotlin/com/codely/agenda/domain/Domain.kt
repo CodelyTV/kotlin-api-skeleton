@@ -2,21 +2,20 @@ package com.codely.agenda.domain
 
 import com.codely.shared.clock.currentMonth
 import com.codely.shared.clock.currentYear
-import java.util.*
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
+import java.util.*
 
 data class Agenda(
     val id: UUID,
-    val day: DayOfWeek,
+    val day: Day,
     val month: Month,
     val year: Year,
     val availableHours: List<AvailableHour> = emptyList()
 ) {
     
     companion object {
-        fun create(id: UUID, day: DayOfWeek) = 
-            when(day.value) {
+        fun create(id: UUID, day: Day) =
+            when(day.dayOfWeek.value) {
                 1 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.monday())
                 2 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.tuesday())
                 3 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.wednesday())
@@ -28,8 +27,8 @@ data class Agenda(
             }
     }
     
-    fun addPlayer(hour: AvailableHour, player: RegisteredPlayer): Agenda {
-        val playerAdded = availableHours.filter { it.from == hour.from }
+    fun addPlayer(hourId: UUID, player: PlayerName): Agenda {
+        val playerAdded = availableHours.filter { it.id == hourId }
             .map { it.addPlayer(player) }
             .toSet()
 
@@ -40,8 +39,8 @@ data class Agenda(
         )
     }
 
-    fun removePlayer(hour: AvailableHour, player: RegisteredPlayer): Agenda {
-        val playerAdded = availableHours.filter { it.from == hour.from }
+    fun removePlayer(hourId: UUID, player: PlayerName): Agenda {
+        val playerAdded = availableHours.filter { it.id == hourId }
             .map { it.removePlayer(player) }
             .toSet()
 
@@ -55,15 +54,16 @@ data class Agenda(
 }
 
 data class AvailableHour(
+    val id: UUID = UUID.randomUUID(),
     val from: Int, // 4
     val to: Int, // 5
     val capacity: MaxCapacity = MaxCapacity(8),
     val type: HourType,
-    val players: List<RegisteredPlayer> // max size depends on capacity
+    val players: List<PlayerName> // max size depends on capacity
 ) {
 
-    fun addPlayer(player: RegisteredPlayer): AvailableHour = copy(players = players + player)
-    fun removePlayer(player: RegisteredPlayer): AvailableHour = copy(players = players - player)
+    fun addPlayer(player: PlayerName): AvailableHour = copy(players = players + player)
+    fun removePlayer(player: PlayerName): AvailableHour = copy(players = players - player)
 
     companion object {
         fun monday() = listOf(
@@ -102,7 +102,7 @@ data class AvailableHour(
 }
 
 @JvmInline
-value class RegisteredPlayer(val value: String)
+value class PlayerName(val value: String)
 
 typealias Year = Int
 
