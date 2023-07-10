@@ -4,6 +4,9 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.codely.agenda.application.book.BookAgendaError
+import com.codely.agenda.application.book.BookAgendaError.AgendaNotFound
+import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
+import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
 import com.codely.shared.clock.currentMonth
 import com.codely.shared.clock.currentYear
 import kotlinx.datetime.Month
@@ -37,38 +40,24 @@ data class Agenda(
     ): Either<BookAgendaError, Agenda> {
         val availableHour = availableHours.find { it.id == availableHourId }
 
-        return availableHour?.let {
-            val updatedPlayers = it.players.toMutableList()
-
-            if (updatedPlayers.contains(playerName)) {
-                return BookAgendaError.PlayerAlreadyBooked.left()
+        return availableHour?.let { hour ->
+            if (playerName in hour.players) {
+                return PlayerAlreadyBooked.left()
             }
 
-            if (updatedPlayers.size >= it.capacity.value) {
-                return BookAgendaError.MaxCapacityReached.left()
+            if (hour.players.size >= hour.capacity.value) {
+                return MaxCapacityReached.left()
             }
 
-            updatedPlayers.add(playerName)
-            val updatedAvailableHour = it.copy(players = updatedPlayers)
-            val updatedAvailableHours = availableHours.toMutableList().apply {
-                val index = indexOf(it)
-                set(index, updatedAvailableHour)
-            }
+            val updatedHour = hour.addPlayer(playerName)
+            val updatedHours = availableHours.toMutableList()
+                .apply {
+                    val index = indexOf(hour)
+                    set(index, updatedHour)
+                }
 
-            copy(availableHours = updatedAvailableHours).right()
-        } ?: BookAgendaError.AgendaNotFound.left()
-    }
-    
-    fun addPlayer(hourId: UUID, player: PlayerName): Agenda {
-        val playerAdded = availableHours.filter { it.id == hourId }
-            .map { it.addPlayer(player) }
-            .toSet()
-
-        return copy(availableHours =
-            playerAdded.union(availableHours)
-                .distinctBy { availableHour -> availableHour.from }
-                .toList()
-        )
+            copy(availableHours = updatedHours).right()
+        } ?: AgendaNotFound.left()
     }
 
     fun removePlayer(hourId: UUID, player: PlayerName): Agenda {

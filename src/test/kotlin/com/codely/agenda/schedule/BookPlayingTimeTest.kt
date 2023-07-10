@@ -1,5 +1,6 @@
 package com.codely.agenda.schedule
 
+import arrow.core.getOrElse
 import com.codely.agenda.domain.PlayerName
 import com.codely.agenda.fakes.FakeAgendaRepository
 import com.codely.agenda.mothers.AgendaMother
@@ -48,7 +49,7 @@ class BookPlayingTimeTest {
         repository.save(fullAgenda)
 
         // When
-        val result = controller.bookAgenda(fullAgenda.id.toString(), fullAgentaRequestBody)
+        val result = controller.bookAgenda(fullAgenda.id.toString(), fullAgendaRequestBody)
 
         // Then
         assertEquals(HttpStatus.CONFLICT, result.statusCode)
@@ -58,10 +59,13 @@ class BookPlayingTimeTest {
     @Test
     fun `should not add a player to an available hour twice`() = runTest {
         // Given
-        repository.save(agenda)
+        val updatedAgenda = agenda
+            .bookAvailableHour(agenda.availableHours.first().id, PlayerName("Rafa"))
+            .getOrElse { agenda }
+
+        repository.save(updatedAgenda)
 
         // When
-        controller.bookAgenda(agenda.id.toString(), requestBody)
         val result = controller.bookAgenda(agenda.id.toString(), requestBody)
 
         // Then
@@ -72,8 +76,10 @@ class BookPlayingTimeTest {
     private val agenda = AgendaMother.tuesday()
     private val fullAgenda = AgendaMother.fullyBooked()
 
-    private val expectedAgenda = agenda.addPlayer(agenda.availableHours.first().id, PlayerName("Rafa"))
+    private val expectedAgenda = agenda
+        .bookAvailableHour(agenda.availableHours.first().id, PlayerName("Rafa"))
+        .getOrElse { agenda }
     private val requestBody = BookAgendaDTO("Rafa", agenda.availableHours.first().id)
 
-    private val fullAgentaRequestBody = BookAgendaDTO("Rafa", fullAgenda.availableHours.first().id)
+    private val fullAgendaRequestBody = BookAgendaDTO("Rafa", fullAgenda.availableHours.first().id)
 }

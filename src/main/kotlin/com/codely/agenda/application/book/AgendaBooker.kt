@@ -13,11 +13,10 @@ import com.codely.agenda.domain.saveOrElse
 import java.util.UUID
 
 context(AgendaRepository)
-suspend fun book(id: UUID, name: PlayerName, hourId: UUID): Either<BookAgendaError, Agenda> =
-    findByOrElse(Id(id), onError = { AgendaNotFound })
+suspend fun bookAgenda(id: UUID, name: PlayerName, hourId: UUID): Either<BookAgendaError, Agenda> =
+    findByOrElse(Id(id), onError = { AgendaNotFound } )
         .flatMap { agenda -> agenda.bookAvailableHour(hourId, name) }
         .flatMap { agenda -> agenda.saveOrElse { error -> Unknown(error) } }
-
 
 sealed class BookAgendaError {
     data object AgendaNotFound : BookAgendaError()
