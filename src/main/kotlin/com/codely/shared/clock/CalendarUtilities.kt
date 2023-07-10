@@ -1,6 +1,6 @@
 package com.codely.shared.clock
 
-import com.codely.Year
+import com.codely.agenda.domain.Year
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month

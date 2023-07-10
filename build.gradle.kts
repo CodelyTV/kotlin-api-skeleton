@@ -53,7 +53,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
     // Functional Programming
-    implementation("io.arrow-kt:arrow-core:1.1.4-rc.3")
+    implementation("io.arrow-kt:arrow-core:1.1.5")
     implementation("io.arrow-kt:arrow-fx-coroutines:1.1.2")
     implementation("io.arrow-kt:arrow-fx-stm:1.1.2")
 
@@ -72,7 +72,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
         jvmTarget = "11"
     }
 }
