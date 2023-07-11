@@ -22,8 +22,3 @@ jobs:
 
       - name: Build with Gradle, run tests
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            check 
-            -x jacocoTestCoverageVerification 
-            -x jacocoTestReport
