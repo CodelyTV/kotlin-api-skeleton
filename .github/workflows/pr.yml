@@ -25,7 +25,5 @@ jobs:
         with:
           arguments: |
             check 
-            -x containerTest 
-            -x spotlessCheck 
             -x jacocoTestCoverageVerification 
             -x jacocoTestReport
