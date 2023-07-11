@@ -4,10 +4,9 @@ import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AvailableHour
 import com.codely.agenda.domain.Day
 import com.codely.agenda.domain.Year
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.Month
-import java.util.*
+import java.util.UUID
 import kotlin.random.Random
+import kotlinx.datetime.Month
 
 object AgendaMother {
 
