@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }}
 
       - name: Pull Docker image on Droplet
-        run: docker pull rafagomezp/tt-sant-andreu
+        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker pull rafagomezp/tt-sant-andreu
 
       - name: Run Docker container on Droplet
-        run: docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
+        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
