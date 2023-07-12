@@ -29,6 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ create_and_deploy_image ]
     steps:
+      - name: Install sshpass
+        run: sudo apt-get -y install sshpass
+
       - name: Get into DigitalOcean Droplet
         uses: appleboy/ssh-action@master
         with:
@@ -37,7 +40,7 @@ jobs:
           password: ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }}
 
       - name: Pull Docker image on Droplet
-        run: docker pull rafagomezp/tt-sant-andreu
+        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker pull rafagomezp/tt-sant-andreu
 
       - name: Run Docker container on Droplet
-        run: docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
+        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
