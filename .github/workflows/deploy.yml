@@ -19,15 +19,15 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Build and deploy image
+        run: >
+           ./gradlew jib --image=rafagomezp/tt-sant-andreu
+           -Djib.to.auth.username=${{ secrets.DOCKERHUB_USER }}
+           -Djib.to.auth.password=${{ secrets.DOCKERHUB_PWD }}
+
   deploy-to-digital-ocean:
     runs-on: ubuntu-latest
     steps:
-      - name: Build and deploy image
-        run: >
-          ./gradlew jib --image=rafagomezp/tt-sant-andreu
-          -Djib.to.auth.username=${{ secrets.DOCKERHUB_USER }}
-          -Djib.to.auth.password=${{ secrets.DOCKERHUB_PWD }}
-
       - name: Get into DigitalOcean Droplet
         uses: appleboy/ssh-action@master
         with:
@@ -35,8 +35,8 @@ jobs:
           username: ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}
           password: ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }}
 
-      - name: Copy Docker image to Droplet
-        run: docker save rafagomezp/tt-sant-andreu | sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker load
+      - name: Pull Docker image on Droplet
+        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker pull rafagomezp/tt-sant-andreu
 
       - name: Run Docker container on Droplet
         run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
