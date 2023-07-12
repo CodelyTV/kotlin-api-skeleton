@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class HealthcheckController {
 
-    @GetMapping("/health-check")
+    @GetMapping("/health")
     @ResponseBody
     fun execute() = "OK"
 }
