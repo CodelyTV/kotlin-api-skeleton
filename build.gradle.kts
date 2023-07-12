@@ -87,7 +87,6 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
 }
 
-
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
