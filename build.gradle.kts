@@ -8,6 +8,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.12.RELEASE"
     id("idea")
     kotlin("plugin.spring") version "1.9.0"
+    id("java-test-fixtures")
     application
     jacoco
 }
@@ -113,6 +114,9 @@ dependencies {
 
     // Coroutines
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
+    // test fixtures dependencies
+    testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }
 
 tasks.withType<KotlinCompile> {

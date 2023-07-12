@@ -3,7 +3,7 @@ package com.codely.agenda.cancel
 import arrow.core.getOrElse
 import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
-import com.codely.agenda.mothers.AgendaMother
+import com.codely.agenda.AgendaMother
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingController
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingDTO
 import com.codely.shared.error.ServerError

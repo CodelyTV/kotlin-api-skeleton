@@ -3,7 +3,7 @@ package com.codely.agenda.book
 import arrow.core.getOrElse
 import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
-import com.codely.agenda.mothers.AgendaMother
+import com.codely.agenda.AgendaMother
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaController
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaDTO
 import com.codely.shared.error.ServerError
