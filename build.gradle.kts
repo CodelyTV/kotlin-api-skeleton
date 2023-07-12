@@ -87,6 +87,12 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
 }
 
+jib {
+    container {
+        jvmFlags = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+    }
+}
+
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
