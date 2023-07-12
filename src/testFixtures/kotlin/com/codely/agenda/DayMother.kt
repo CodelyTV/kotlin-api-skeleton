@@ -1,4 +1,4 @@
-package com.codely.agenda.mothers
+package com.codely.agenda
 
 import com.codely.agenda.domain.Day
 import java.time.DayOfWeek
