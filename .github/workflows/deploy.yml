@@ -39,7 +39,6 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_DROPLET_IP }}
           username: ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}
           password: ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }}
-          timeout: 300
           debug: true
           script: |
             container_id=$(docker ps -aqf "ancestor=rafagomezp/tt-sant-andreu")
