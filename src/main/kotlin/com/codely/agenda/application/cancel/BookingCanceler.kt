@@ -16,6 +16,7 @@ suspend fun cancelBooking(id: UUID, name: Player, hourId: UUID): Either<CancelBo
         .flatMap { agenda -> agenda.cancelBooking(hourId, name) }
         .flatMap { agenda -> agenda.saveOrElse { error -> CancelBookingError.Unknown(error) } }
 
+// TEST DEPLOYMENT
 sealed class CancelBookingError {
     data object AgendaNotFound : CancelBookingError()
     data object AvailableHourNotFound : CancelBookingError()
