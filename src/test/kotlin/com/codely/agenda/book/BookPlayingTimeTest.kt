@@ -1,7 +1,7 @@
-package com.codely.agenda.schedule
+package com.codely.agenda.book
 
 import arrow.core.getOrElse
-import com.codely.agenda.domain.PlayerName
+import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
 import com.codely.agenda.mothers.AgendaMother
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaController
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -42,7 +41,6 @@ class BookPlayingTimeTest {
         assertTrue { repository.containsResource(expectedAgenda) }
     }
 
-
     @Test
     fun `should not add a player for an hour if it's reached max capacity`() = runTest {
         // Given
@@ -60,7 +58,7 @@ class BookPlayingTimeTest {
     fun `should not add a player to an available hour twice`() = runTest {
         // Given
         val updatedAgenda = agenda
-            .bookAvailableHour(agenda.availableHours.first().id, PlayerName("Rafa"))
+            .bookAvailableHour(agenda.availableHours.first().id, Player("Rafa"))
             .getOrElse { agenda }
 
         repository.save(updatedAgenda)
@@ -77,7 +75,7 @@ class BookPlayingTimeTest {
     private val fullAgenda = AgendaMother.fullyBooked()
 
     private val expectedAgenda = agenda
-        .bookAvailableHour(agenda.availableHours.first().id, PlayerName("Rafa"))
+        .bookAvailableHour(agenda.availableHours.first().id, Player("Rafa"))
         .getOrElse { agenda }
     private val requestBody = BookAgendaDTO("Rafa", agenda.availableHours.first().id)
 

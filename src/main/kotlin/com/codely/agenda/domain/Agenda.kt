@@ -4,13 +4,15 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.codely.agenda.application.book.BookAgendaError
-import com.codely.agenda.application.book.BookAgendaError.AgendaNotFound
-import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
 import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
+import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
+import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
+import com.codely.agenda.application.cancel.CancelBookingError
+import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
 import com.codely.shared.clock.currentMonth
 import com.codely.shared.clock.currentYear
+import java.util.UUID
 import kotlinx.datetime.Month
-import java.util.*
 
 data class Agenda(
     val id: UUID,
@@ -19,10 +21,10 @@ data class Agenda(
     val year: Year,
     val availableHours: List<AvailableHour> = emptyList()
 ) {
-    
+
     companion object {
         fun create(id: UUID, day: Day) =
-            when(day.dayOfWeek.value) {
+            when (day.dayOfWeek.value) {
                 1 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.monday())
                 2 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.tuesday())
                 3 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.wednesday())
@@ -36,16 +38,17 @@ data class Agenda(
 
     fun bookAvailableHour(
         availableHourId: UUID,
-        playerName: PlayerName
+        playerName: Player
     ): Either<BookAgendaError, Agenda> {
         val availableHour = availableHours.find { it.id == availableHourId }
 
         return availableHour?.let { hour ->
-            if (playerName in hour.players) {
+
+            if (playerName in hour.registeredPlayers) {
                 return PlayerAlreadyBooked.left()
             }
 
-            if (hour.players.size >= hour.capacity.value) {
+            if (hour.registeredPlayers.size >= hour.capacity.value) {
                 return MaxCapacityReached.left()
             }
 
@@ -57,21 +60,30 @@ data class Agenda(
                 }
 
             copy(availableHours = updatedHours).right()
-        } ?: AgendaNotFound.left()
+        } ?: AvailableHourNotFound.left()
     }
 
-    fun removePlayer(hourId: UUID, player: PlayerName): Agenda {
-        val playerAdded = availableHours.filter { it.id == hourId }
-            .map { it.removePlayer(player) }
-            .toSet()
+    fun cancelBooking(
+        availableHourId: UUID,
+        playerName: Player
+    ): Either<CancelBookingError, Agenda> {
+        val availableHour = availableHours.find { it.id == availableHourId }
 
-        return copy(availableHours =
-        playerAdded.union(availableHours)
-            .distinctBy { availableHour -> availableHour.from }
-            .toList()
-        )
+        return availableHour?.let { hour ->
+            if (playerName !in hour.registeredPlayers) {
+                return PlayerNotBooked.left()
+            }
+
+            val updatedHour = hour.removePlayer(playerName)
+            val updatedHours = availableHours.toMutableList()
+                .apply {
+                    val index = indexOf(hour)
+                    set(index, updatedHour)
+                }
+
+            copy(availableHours = updatedHours).right()
+        } ?: CancelBookingError.AvailableHourNotFound.left()
     }
-
 }
 
 data class AvailableHour(
@@ -80,50 +92,50 @@ data class AvailableHour(
     val to: Int, // 5
     val capacity: MaxCapacity = MaxCapacity(8),
     val type: HourType,
-    val players: List<PlayerName> // max size depends on capacity
+    val registeredPlayers: List<Player> // max size depends on capacity
 ) {
 
-    fun addPlayer(player: PlayerName): AvailableHour = copy(players = players + player)
-    fun removePlayer(player: PlayerName): AvailableHour = copy(players = players - player)
+    fun addPlayer(player: Player): AvailableHour = copy(registeredPlayers = registeredPlayers + player)
+    fun removePlayer(player: Player): AvailableHour = copy(registeredPlayers = registeredPlayers - player)
 
     companion object {
         fun monday() = listOf(
-            AvailableHour(from = 16, to = 17, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
 
         fun tuesday() = listOf(
-            AvailableHour(from = 16, to = 17, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 18, to = 19, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 18, to = 19, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
 
         fun wednesday() = listOf(
-            AvailableHour(from = 16, to = 17, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
 
         fun thursday() = listOf(
-            AvailableHour(from = 16, to = 17, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
 
         fun friday() = listOf(
-            AvailableHour(from = 16, to = 17, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
 
         fun saturday() = listOf(
-            AvailableHour(from = 10, to = 11, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 11, to = 12, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 12, to = 13, players = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 13, to = 14, players = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 10, to = 11, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 11, to = 12, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 12, to = 13, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
+            AvailableHour(from = 13, to = 14, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
         )
     }
 }
 
 @JvmInline
-value class PlayerName(val value: String)
+value class Player(val value: String)
 
 typealias Year = Int
 

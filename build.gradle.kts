@@ -1,13 +1,15 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.0"
-    id("com.diffplug.spotless") version "5.7.0"
+    id("com.diffplug.spotless") version "6.18.0"
     id("org.springframework.boot") version "2.7.2"
     id("io.spring.dependency-management") version "1.0.12.RELEASE"
     id("idea")
     kotlin("plugin.spring") version "1.9.0"
     application
+    jacoco
 }
 
 group = "com.codely"
@@ -38,6 +40,49 @@ val integrationTest = task<Test>("integrationTest") {
     classpath = sourceSets["test-integration"].runtimeClasspath
     useJUnitPlatform()
     shouldRunAfter("test")
+}
+
+tasks.withType<Test> {
+    testLogging {
+        showStandardStreams = false
+        events("skipped", "failed")
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = TestExceptionFormat.FULL
+        afterSuite(printTestResult)
+    }
+    useJUnitPlatform()
+}
+
+val printTestResult: KotlinClosure2<TestDescriptor, TestResult, Void>
+    get() = KotlinClosure2({ desc, result ->
+
+        if (desc.parent == null) { // will match the outermost suite
+            println("------")
+            println(
+                "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} " +
+                        "successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            )
+            println(
+                "Tests took: ${result.endTime - result.startTime} ms."
+            )
+            println("------")
+        }
+        null
+    })
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    dependsOn(tasks.test)
 }
 
 dependencies {
@@ -83,15 +128,10 @@ tasks.withType<Test> {
 
 spotless {
     kotlin {
-        ktlint()
-            .userData(
-                mapOf(
-                    "insert_final_newline" to "true"
-                )
-            )
+        ktlint().setEditorConfigPath("$rootDir/.editorconfig")
     }
     kotlinGradle {
-        ktlint()
+        ktlint().setEditorConfigPath("$rootDir/.editorconfig")
     }
 }
 
