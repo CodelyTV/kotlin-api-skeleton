@@ -29,6 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ create_and_deploy_image ]
     steps:
+      - name: Install sshpass
+        run: sudo apt-get -y install sshpass
+
       - name: Get into DigitalOcean Droplet
         uses: appleboy/ssh-action@master
         with:
