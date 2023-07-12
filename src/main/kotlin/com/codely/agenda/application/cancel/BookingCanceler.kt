@@ -12,7 +12,7 @@ import java.util.UUID
 
 context(AgendaRepository)
 suspend fun cancelBooking(id: UUID, name: Player, hourId: UUID): Either<CancelBookingError, Agenda> =
-    findByOrElse(AgendaFindByCriteria.Id(id), onError = { CancelBookingError.AgendaNotFound } )
+    findByOrElse(AgendaFindByCriteria.Id(id), onError = { CancelBookingError.AgendaNotFound })
         .flatMap { agenda -> agenda.cancelBooking(hourId, name) }
         .flatMap { agenda -> agenda.saveOrElse { error -> CancelBookingError.Unknown(error) } }
 

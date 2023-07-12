@@ -55,7 +55,6 @@ class CancelBookingTest {
         assertEquals(ServerError.of(USER_NOT_BOOKED), result.body)
     }
 
-
     private val player = Player("Exposito")
     private val fullAgenda = AgendaMother.fullyBooked()
     private val expectedAgenda = fullAgenda

@@ -39,7 +39,7 @@ class BookAgendaController(private val repository: AgendaRepository) {
     }
 
     private fun BookAgendaError.toServerError(): ResponseEntity<*> =
-        when(this) {
+        when (this) {
             is MaxCapacityReached -> ResponseEntity.status(HttpStatus.CONFLICT).body(ServerError.of(MAX_CAPACITY_REACHED))
             is PlayerAlreadyBooked -> ResponseEntity.status(HttpStatus.CONFLICT).body(ServerError.of(USER_ALREADY_BOOKED))
             is AgendaNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(ServerError.of(AGENDA_DOES_NOT_EXIST))

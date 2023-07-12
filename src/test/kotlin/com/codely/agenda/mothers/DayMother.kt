@@ -12,5 +12,4 @@ object DayMother {
     fun thursday(number: Int = Random.nextInt(1, 32)) = Day(number, DayOfWeek.THURSDAY)
     fun friday(number: Int = Random.nextInt(1, 32)) = Day(number, DayOfWeek.FRIDAY)
     fun saturday(number: Int = Random.nextInt(1, 32)) = Day(number, DayOfWeek.SATURDAY)
-
 }

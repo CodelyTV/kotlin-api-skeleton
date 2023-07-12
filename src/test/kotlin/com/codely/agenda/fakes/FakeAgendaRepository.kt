@@ -15,7 +15,7 @@ class FakeAgendaRepository : AgendaRepository, FakeRepository<Agenda> {
     override suspend fun save(agenda: Agenda): Either<Throwable, Unit> = catch { elements.add(agenda) }
 
     override suspend fun findBy(criteria: AgendaFindByCriteria): Either<Throwable, Agenda> = catch {
-        when(criteria) {
+        when (criteria) {
             is Weekday -> elements.first { el -> el.day.dayOfWeek == criteria.dayOfWeek }
             is Id -> elements.first { el -> el.id == criteria.id }
         }

@@ -38,7 +38,7 @@ class CancelBookingController(private val repository: AgendaRepository) {
     }
 
     private fun CancelBookingError.toServerError(): ResponseEntity<*> =
-        when(this) {
+        when (this) {
             is AgendaNotFound -> ResponseEntity.status(NOT_FOUND).body(ServerError.of(AGENDA_DOES_NOT_EXIST))
             is AvailableHourNotFound -> ResponseEntity.status(NOT_FOUND).body(ServerError.of(AVAILABLE_HOUR_DOES_NOT_EXIST))
             is PlayerNotBooked -> ResponseEntity.status(NOT_FOUND).body(ServerError.of(USER_NOT_BOOKED))

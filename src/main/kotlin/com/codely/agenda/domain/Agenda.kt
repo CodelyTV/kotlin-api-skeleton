@@ -21,10 +21,10 @@ data class Agenda(
     val year: Year,
     val availableHours: List<AvailableHour> = emptyList()
 ) {
-    
+
     companion object {
         fun create(id: UUID, day: Day) =
-            when(day.dayOfWeek.value) {
+            when (day.dayOfWeek.value) {
                 1 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.monday())
                 2 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.tuesday())
                 3 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.wednesday())
@@ -84,7 +84,6 @@ data class Agenda(
             copy(availableHours = updatedHours).right()
         } ?: CancelBookingError.AvailableHourNotFound.left()
     }
-
 }
 
 data class AvailableHour(

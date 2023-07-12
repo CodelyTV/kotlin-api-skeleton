@@ -41,7 +41,6 @@ class BookPlayingTimeTest {
         assertTrue { repository.containsResource(expectedAgenda) }
     }
 
-
     @Test
     fun `should not add a player for an hour if it's reached max capacity`() = runTest {
         // Given
