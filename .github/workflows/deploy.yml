@@ -41,20 +41,10 @@ jobs:
           password: ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }}
           timeout: 300
           debug: true
-
-      - name: Find Container ID
-        run: |
-          container_id=$(sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker ps -aqf "ancestor=rafagomezp/tt-sant-andreu")
-          echo "Container ID: $container_id"
-
-      - name: Stop existing Docker container on Droplet
-        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker stop $container_id
-
-      - name: Remove existing Docker container on Droplet
-        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker rm $container_id
-
-      - name: Pull Docker image on Droplet
-        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker pull rafagomezp/tt-sant-andreu
-
-      - name: Run Docker container on Droplet
-        run: sshpass -p ${{ secrets.DIGITALOCEAN_DROPLET_PASSWORD }} ssh ${{ secrets.DIGITALOCEAN_DROPLET_USERNAME }}@${{ secrets.DIGITALOCEAN_DROPLET_IP }} docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
+          script: |
+            container_id=$(docker ps -aqf "ancestor=rafagomezp/tt-sant-andreu")
+            echo "Container ID: $container_id"
+            docker stop $container_id
+            docker rm $container_id
+            docker pull rafagomezp/tt-sant-andreu
+            docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
