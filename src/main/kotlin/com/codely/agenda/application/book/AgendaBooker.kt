@@ -1,17 +1,11 @@
 package com.codely.agenda.application.book
 
 import arrow.core.Either
-import arrow.core.catch
 import arrow.core.flatMap
-import arrow.core.identity
 import arrow.core.raise.Raise
-import arrow.core.raise.catch
-import arrow.core.raise.fold
-import arrow.core.raise.recover
 import arrow.core.raise.withError
 import com.codely.agenda.application.book.BookAgendaError.AgendaNotFound
 import com.codely.agenda.application.book.BookAgendaError.Unknown
-import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria.Id
 import com.codely.agenda.domain.AgendaRepository
@@ -40,7 +34,6 @@ suspend fun bookAgendaDsl2(id: UUID, name: Player, hourId: UUID): Agenda {
 
     return updatedAgenda.saveOrElse { error -> Unknown(error) }.bind()
 }
-
 
 sealed class BookAgendaError {
     data object AgendaNotFound : BookAgendaError()

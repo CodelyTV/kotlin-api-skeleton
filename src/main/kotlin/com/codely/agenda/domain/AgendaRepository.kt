@@ -2,7 +2,6 @@ package com.codely.agenda.domain
 
 import arrow.core.Either
 import arrow.core.raise.Raise
-import kotlinx.datetime.DayOfWeek
 import java.util.UUID
 
 interface AgendaRepository {

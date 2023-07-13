@@ -16,7 +16,7 @@ class MongoAgendaRepository(private val repository: JpaAgendaRepository) : Agend
 
     override suspend fun save(agenda: Agenda): Either<Throwable, Unit> = catch { repository.save(agenda.toDocument()) }
     override suspend fun findBy(criteria: AgendaFindByCriteria): Either<Throwable, Agenda> = catch {
-        when(criteria) {
+        when (criteria) {
             is Id -> repository.findById(criteria.id.toString()).get().toAgenda()
         }
     }

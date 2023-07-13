@@ -15,5 +15,4 @@ context(AgendaRepository, Raise<BookAgendaError>)
 suspend fun handleDsl(command: BookAgendaCommand): Agenda =
     bookAgendaDsl(id = command.id, name = Player(name = command.playerName), hourId = command.hourId)
 
-
 data class BookAgendaCommand(val id: UUID, val hourId: UUID, val playerName: String)
