@@ -135,7 +135,7 @@ data class AvailableHour(
 }
 
 @JvmInline
-value class Player(val value: String)
+value class Player(val name: String)
 
 typealias Year = Int
 

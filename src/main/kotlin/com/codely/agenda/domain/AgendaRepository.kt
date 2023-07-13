@@ -1,12 +1,16 @@
 package com.codely.agenda.domain
 
 import arrow.core.Either
+import arrow.core.raise.Raise
 import kotlinx.datetime.DayOfWeek
 import java.util.UUID
 
 interface AgendaRepository {
     suspend fun save(agenda: Agenda): Either<Throwable, Unit>
     suspend fun findBy(criteria: AgendaFindByCriteria): Either<Throwable, Agenda>
+
+    context(Raise<Throwable>)
+    suspend fun findByDsl(criteria: AgendaFindByCriteria): Agenda
 }
 
 context(AgendaRepository)
@@ -22,5 +26,4 @@ suspend fun <T> findByOrElse(criteria: AgendaFindByCriteria, onError: (cause: Th
 
 sealed class AgendaFindByCriteria {
     class Id(val id: UUID) : AgendaFindByCriteria()
-    class Weekday(val dayOfWeek: DayOfWeek) : AgendaFindByCriteria()
 }

@@ -10,7 +10,8 @@ import com.codely.shared.error.ServerError
 import com.codely.shared.error.UserServerErrors
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
+import org.springframework.http.HttpStatus.CONFLICT
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +38,7 @@ class BookPlayingTimeTest {
         val result = controller.bookAgenda(agenda.id.toString(), requestBody)
 
         // Then
-        assertEquals(HttpStatus.OK, result.statusCode)
+        assertEquals(OK, result.statusCode)
         assertTrue { repository.containsResource(expectedAgenda) }
     }
 
@@ -50,7 +51,7 @@ class BookPlayingTimeTest {
         val result = controller.bookAgenda(fullAgenda.id.toString(), fullAgendaRequestBody)
 
         // Then
-        assertEquals(HttpStatus.CONFLICT, result.statusCode)
+        assertEquals(CONFLICT, result.statusCode)
         assertEquals(ServerError.of(UserServerErrors.MAX_CAPACITY_REACHED), result.body)
     }
 
@@ -67,7 +68,7 @@ class BookPlayingTimeTest {
         val result = controller.bookAgenda(agenda.id.toString(), requestBody)
 
         // Then
-        assertEquals(HttpStatus.CONFLICT, result.statusCode)
+        assertEquals(CONFLICT, result.statusCode)
         assertEquals(ServerError.of(UserServerErrors.USER_ALREADY_BOOKED), result.body)
     }
 
