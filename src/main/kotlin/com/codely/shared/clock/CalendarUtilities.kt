@@ -6,11 +6,9 @@ import com.codely.agenda.domain.Year
 import java.util.Calendar
 import java.util.TimeZone as JavaTimeZone
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-
 
 fun currentMonth(): Month = Clock.System.now().toLocalDateTime(TimeZone.of("UTC")).month
 fun currentDay(): Day = Clock.System.now().toLocalDateTime(TimeZone.of("UTC")).let { Day(it.dayOfMonth, it.dayOfWeek) }
