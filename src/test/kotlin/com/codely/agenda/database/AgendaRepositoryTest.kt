@@ -18,8 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 
 
 @ExperimentalCoroutinesApi
-@Testcontainers
-@ContextConfiguration(classes = [MongoContainerConfig::class])
+@DataMongoTest
 class AgendaRepositoryTest(@Autowired private val jpaRepository: JpaAgendaRepository) {
 
     private val repository = MongoAgendaRepository(jpaRepository)
