@@ -1,6 +1,5 @@
 package com.codely.agenda.primaryadapter.rest.book
 
-import arrow.core.Either
 import arrow.core.raise.fold
 import com.codely.agenda.application.book.BookAgendaCommand
 import com.codely.agenda.application.book.BookAgendaError
@@ -11,7 +10,6 @@ import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
 import com.codely.agenda.application.book.BookAgendaError.Unknown
 import com.codely.agenda.application.book.handle
 import com.codely.agenda.application.book.handleDsl
-import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.shared.error.ServerError
 import com.codely.shared.error.UserServerErrors.AGENDA_DOES_NOT_EXIST
