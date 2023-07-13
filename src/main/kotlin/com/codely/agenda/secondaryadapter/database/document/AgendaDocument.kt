@@ -19,6 +19,7 @@ class AgendaDocument(
     val dayNumber: Int,
     val dayWeek: String,
     val month: String,
+    val week: Int,
     val year: Int,
     val availableHours: List<AvailableHourDocument>
 ) {
@@ -29,6 +30,7 @@ class AgendaDocument(
             day = Day(number = dayNumber, dayOfWeek = DayOfWeek.valueOf(dayWeek)),
             month = Month.valueOf(month),
             year = year,
+            week = week,
             availableHours = availableHours.map { hour -> hour.toAvailableHour() }
         )
 }
@@ -59,6 +61,7 @@ internal fun Agenda.toDocument() =
         dayWeek = day.dayOfWeek.name,
         month = month.name,
         year = year,
+        week = week,
         availableHours = availableHours.map { hour -> hour.toDocument() }
     )
 

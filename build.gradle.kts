@@ -107,9 +107,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-test:2.7.2")
-    testImplementation("org.testcontainers:testcontainers:1.18.1")
-    testImplementation("org.testcontainers:junit-jupiter:1.18.1")
-    testImplementation("org.testcontainers:mongodb:1.18.1")
 
     testImplementation("io.kotest.extensions:kotest-assertions-arrow:1.3.0") {
         because("provides good testing for arrow")
