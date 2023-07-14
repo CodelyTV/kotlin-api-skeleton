@@ -39,7 +39,7 @@ class BookPlayingTimeTest {
         repository.save(agenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), requestBody)
 
         // Then
         assertEquals(OK, result.statusCode)
@@ -52,7 +52,7 @@ class BookPlayingTimeTest {
         repository.save(fullAgenda)
 
         // When
-        val result = controller.bookAgenda(fullAgenda.id, fullAgendaHourdId, fullAgendaRequestBody)
+        val result = controller.bookAgenda(fullAgenda.id.toString(), fullAgendaHourdId.toString(), fullAgendaRequestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -69,7 +69,7 @@ class BookPlayingTimeTest {
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), requestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -86,7 +86,7 @@ class BookPlayingTimeTest {
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), requestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -96,7 +96,7 @@ class BookPlayingTimeTest {
     @Test
     fun `should fail if agenda does not exist`() = runTest {
         // When
-        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
@@ -110,7 +110,7 @@ class BookPlayingTimeTest {
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
