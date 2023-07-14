@@ -47,10 +47,3 @@ jobs:
             docker rm $container_id
             docker pull rafagomezp/tt-sant-andreu
             docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
-
-      - name: Install Open Telemetry
-        run: >
-          docker exec $container_id \
-          sh -c 'wget -O opentelemetry-javaagent-all.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent-all.jar'
-          docker exec $container_id \
-          sh -c 'java -javaagent:opentelemetry-javaagent-all.jar -jar kotlin-api-skeleton.jar'
