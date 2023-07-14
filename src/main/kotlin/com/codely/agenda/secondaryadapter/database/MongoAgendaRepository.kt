@@ -2,11 +2,12 @@ package com.codely.agenda.secondaryadapter.database
 
 import arrow.core.Either
 import arrow.core.Either.Companion.catch
-import arrow.core.raise.Raise
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria
 import com.codely.agenda.domain.AgendaFindByCriteria.Id
 import com.codely.agenda.domain.AgendaRepository
+import com.codely.agenda.domain.AgendaSearchByCriteria
+import com.codely.agenda.domain.AgendaSearchByCriteria.WeekAndYear
 import com.codely.agenda.secondaryadapter.database.document.JpaAgendaRepository
 import com.codely.agenda.secondaryadapter.database.document.toDocument
 import org.springframework.stereotype.Component
@@ -21,7 +22,9 @@ class MongoAgendaRepository(private val repository: JpaAgendaRepository) : Agend
         }
     }
 
-    context(Raise<Throwable>) override suspend fun findByDsl(criteria: AgendaFindByCriteria): Agenda {
-        TODO("Not yet implemented")
+    override suspend fun searchBy(criteria: AgendaSearchByCriteria): Either<Throwable, List<Agenda>> = catch {
+        when (criteria) {
+            is WeekAndYear -> repository.findAllByWeekAndYear(criteria.week, criteria.year).map { document -> document.toAgenda() }
+        }
     }
 }

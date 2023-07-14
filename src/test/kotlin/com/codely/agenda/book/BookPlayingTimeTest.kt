@@ -39,7 +39,7 @@ class BookPlayingTimeTest {
         repository.save(agenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id.toString(), requestBody)
+        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
 
         // Then
         assertEquals(OK, result.statusCode)
@@ -52,7 +52,7 @@ class BookPlayingTimeTest {
         repository.save(fullAgenda)
 
         // When
-        val result = controller.bookAgenda(fullAgenda.id.toString(), fullAgendaRequestBody)
+        val result = controller.bookAgenda(fullAgenda.id, fullAgendaHourdId, fullAgendaRequestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -63,13 +63,13 @@ class BookPlayingTimeTest {
     fun `should not add a player to an available hour twice`() = runTest {
         // Given
         val updatedAgenda = agenda
-            .bookAvailableHour(agenda.availableHours.first().id, Player("Rafa"))
+            .bookAvailableHour(hourId, Player("Rafa"))
             .getOrElse { agenda }
 
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id.toString(), requestBody)
+        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -86,7 +86,7 @@ class BookPlayingTimeTest {
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id.toString(), requestBody)
+        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
 
         // Then
         assertEquals(CONFLICT, result.statusCode)
@@ -96,7 +96,7 @@ class BookPlayingTimeTest {
     @Test
     fun `should fail if agenda does not exist`() = runTest {
         // When
-        val result = controller.bookAgenda(agenda.id.toString(), requestBody)
+        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
@@ -110,7 +110,7 @@ class BookPlayingTimeTest {
         repository.save(updatedAgenda)
 
         // When
-        val result = controller.bookAgenda(agenda.id.toString(), requestBody)
+        val result = controller.bookAgenda(agenda.id, hourId, requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
@@ -123,7 +123,11 @@ class BookPlayingTimeTest {
     private val expectedAgenda = agenda
         .bookAvailableHour(agenda.availableHours.first().id, Player("Rafa"))
         .getOrElse { agenda }
-    private val requestBody = BookAgendaDTO("Rafa", agenda.availableHours.first().id)
 
-    private val fullAgendaRequestBody = BookAgendaDTO("Rafa", fullAgenda.availableHours.first().id)
+    private val hourId = agenda.availableHours.first().id
+    private val fullAgendaHourdId = fullAgenda.availableHours.first().id
+
+    private val requestBody = BookAgendaDTO("Rafa")
+
+    private val fullAgendaRequestBody = BookAgendaDTO("Rafa",)
 }

@@ -2,11 +2,12 @@ package com.codely.agenda.fakes
 
 import arrow.core.Either
 import arrow.core.Either.Companion.catch
-import arrow.core.raise.Raise
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria
 import com.codely.agenda.domain.AgendaFindByCriteria.Id
 import com.codely.agenda.domain.AgendaRepository
+import com.codely.agenda.domain.AgendaSearchByCriteria
+import com.codely.agenda.domain.AgendaSearchByCriteria.WeekAndYear
 import com.codely.shared.fakes.FakeRepository
 
 class FakeAgendaRepository : AgendaRepository, FakeRepository<Agenda> {
@@ -20,7 +21,9 @@ class FakeAgendaRepository : AgendaRepository, FakeRepository<Agenda> {
         }
     }
 
-    context(Raise<Throwable>) override suspend fun findByDsl(criteria: AgendaFindByCriteria): Agenda {
-        TODO("Not yet implemented")
+    override suspend fun searchBy(criteria: AgendaSearchByCriteria): Either<Throwable, List<Agenda>> = catch {
+        when (criteria) {
+            is WeekAndYear -> elements.filter { el -> el.week == criteria.week }
+        }
     }
 }

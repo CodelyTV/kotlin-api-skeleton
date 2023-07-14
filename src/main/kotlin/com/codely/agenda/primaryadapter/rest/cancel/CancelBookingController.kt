@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CancelBookingController(private val repository: AgendaRepository) {
 
-    @DeleteMapping("/agenda/{id}/book")
-    fun cancel(@PathVariable id: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
+    @DeleteMapping("/agendas/{agendaId}/hours/{hourId}")
+    fun cancel(@PathVariable agendaId: UUID, @PathVariable hourId: UUID, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
-            handle(CancelBookingCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName))
+            handle(CancelBookingCommand(id = agendaId, hourId = hourId, playerName = body.playerName))
                 .toServerResponse(
                     onValidResponse = { agenda -> ResponseEntity.status(OK).body(agenda) },
                     onError = { error -> error.toServerError() }
