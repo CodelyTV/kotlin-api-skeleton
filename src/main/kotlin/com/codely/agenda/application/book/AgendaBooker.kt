@@ -18,6 +18,7 @@ suspend fun bookAgenda(id: UUID, name: Player, hourId: UUID): Agenda =
         .saveOrElse { error -> Unknown(error) }.bind()
 
 sealed class BookAgendaError {
+    data object InvalidUUID : BookAgendaError()
     data object AgendaNotFound : BookAgendaError()
     data object MaxCapacityReached : BookAgendaError()
     data object PlayerAlreadyBooked : BookAgendaError()

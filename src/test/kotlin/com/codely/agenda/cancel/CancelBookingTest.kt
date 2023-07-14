@@ -35,7 +35,7 @@ class CancelBookingTest {
         repository.save(fullAgenda)
 
         // When
-        val result = controller.cancel(fullAgenda.id, fullAgendaHourId, fullAgendaRequestBody)
+        val result = controller.cancel(fullAgenda.id.toString(), fullAgendaHourId.toString(), fullAgendaRequestBody)
 
         // Then
         assertEquals(OK, result.statusCode)
@@ -48,7 +48,7 @@ class CancelBookingTest {
         repository.save(emptyAgenda)
 
         // When
-        val result = controller.cancel(emptyAgenda.id, emptyAgendaHourId, requestBody)
+        val result = controller.cancel(emptyAgenda.id.toString(), emptyAgendaHourId.toString(), requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
