@@ -10,7 +10,7 @@ object AdminMother {
 
     fun random(
         id: UUID = UUID.randomUUID(),
-        username: Username = Username("POTATO"),
+        username: Username = Username("sant-andreu"),
         password: Password = Password("123password"),
         key: AccessKey = AccessKey("!!@#$!@AASDCFases11234")
     ) = Admin(
