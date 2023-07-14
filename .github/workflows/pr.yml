@@ -11,6 +11,9 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
+      - name: Set up debug logging
+        run: echo "ACTIONS_RUNNER_DEBUG=true" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v3
 
