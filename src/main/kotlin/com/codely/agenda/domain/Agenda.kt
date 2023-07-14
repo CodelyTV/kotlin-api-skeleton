@@ -4,14 +4,14 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.codely.agenda.application.book.BookAgendaError
+import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
 import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
 import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
-import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
 import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
-import com.codely.shared.clock.currentMonth
-import com.codely.shared.clock.currentWeek
-import com.codely.shared.clock.currentYear
+import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 import java.util.UUID
 import kotlinx.datetime.Month
 
@@ -25,36 +25,33 @@ data class Agenda(
 ) {
 
     companion object {
-        fun create(id: UUID, day: Day) =
-            when (day.dayOfWeek.value) {
-                1 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.monday())
-                2 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.tuesday())
-                3 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.wednesday())
-                4 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.thursday())
-                5 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.friday())
-                6 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.saturday())
-                7 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), emptyList())
-                else -> TODO()
-            }
+
+        fun from(day: Day, localDate: LocalDate) =
+            Agenda(
+                UUID.randomUUID(),
+                day,
+                localDate.month,
+                localDate.get(WeekFields.of(Locale.FRANCE).weekOfYear()),
+                localDate.year,
+                AvailableHour.fromDay(day)
+            )
     }
 
     fun bookAvailableHour(
         availableHourId: UUID,
-        playerName: Player
+        player: Player
     ): Either<BookAgendaError, Agenda> {
         val availableHour = availableHours.find { it.id == availableHourId }
 
-        return availableHour?.let { hour ->
+        return if (availableHours.any { hour -> player in hour.registeredPlayers })
+            PlayerAlreadyBooked.left()
 
-            if (playerName in hour.registeredPlayers) {
-                return PlayerAlreadyBooked.left()
-            }
-
-            if (hour.registeredPlayers.size >= hour.capacity.value) {
+        else availableHour?.let { hour ->
+            if (hour.maxCapacityReached()) {
                 return MaxCapacityReached.left()
             }
 
-            val updatedHour = hour.addPlayer(playerName)
+            val updatedHour = hour.addPlayer(player)
             val updatedHours = availableHours.toMutableList()
                 .apply {
                     val index = indexOf(hour)
@@ -100,7 +97,21 @@ data class AvailableHour(
     fun addPlayer(player: Player): AvailableHour = copy(registeredPlayers = registeredPlayers + player)
     fun removePlayer(player: Player): AvailableHour = copy(registeredPlayers = registeredPlayers - player)
 
+    fun maxCapacityReached() = registeredPlayers.size >= capacity.value
+
     companion object {
+        fun fromDay(day: Day) =
+            when (day.dayOfWeek.value) {
+                1 -> monday()
+                2 -> tuesday()
+                3 -> wednesday()
+                4 -> thursday()
+                5 -> friday()
+                6 -> saturday()
+                7 -> emptyList()
+                else -> TODO()
+            }
+
         fun monday() = listOf(
             AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
             AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
