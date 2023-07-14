@@ -28,6 +28,7 @@ suspend fun bookAgendaDsl(id: UUID, name: Player, hourId: UUID): Agenda =
 
 context(AgendaRepository, Raise<BookAgendaError>)
 suspend fun bookAgendaDsl2(id: UUID, name: Player, hourId: UUID): Agenda {
+    // Transforms Raise<Throwable> to Raise<BookAgendaError>
     val agenda = withError(block = { findByDsl(Id(id)) }, transform = { AgendaNotFound })
 
     val updatedAgenda = agenda.bookAvailableHour(hourId, name).bind()

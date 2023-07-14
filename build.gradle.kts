@@ -107,6 +107,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-test:2.7.2")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.7.0")
 
     testImplementation("io.kotest.extensions:kotest-assertions-arrow:1.3.0") {
         because("provides good testing for arrow")
