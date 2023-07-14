@@ -7,7 +7,7 @@ import com.codely.agenda.AgendaMother
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingController
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingDTO
 import com.codely.shared.error.ServerError
-import com.codely.shared.error.UserServerErrors.USER_NOT_BOOKED
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_NOT_BOOKED
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
