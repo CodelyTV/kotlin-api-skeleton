@@ -7,10 +7,10 @@ import com.codely.agenda.fakes.FakeAgendaRepository
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaController
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaDTO
 import com.codely.shared.error.ServerError
-import com.codely.shared.error.UserServerErrors.AGENDA_DOES_NOT_EXIST
-import com.codely.shared.error.UserServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
-import com.codely.shared.error.UserServerErrors.MAX_CAPACITY_REACHED
-import com.codely.shared.error.UserServerErrors.USER_ALREADY_BOOKED
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.MAX_CAPACITY_REACHED
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_ALREADY_BOOKED
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi

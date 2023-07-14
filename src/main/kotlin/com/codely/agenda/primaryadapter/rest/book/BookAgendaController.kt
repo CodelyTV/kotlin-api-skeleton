@@ -12,11 +12,11 @@ import com.codely.agenda.application.book.BookAgendaError.InvalidUUID
 import com.codely.agenda.application.book.handle
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.shared.error.ServerError
-import com.codely.shared.error.UserServerErrors.AGENDA_DOES_NOT_EXIST
-import com.codely.shared.error.UserServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
-import com.codely.shared.error.UserServerErrors.INVALID_IDENTIFIERS
-import com.codely.shared.error.UserServerErrors.MAX_CAPACITY_REACHED
-import com.codely.shared.error.UserServerErrors.USER_ALREADY_BOOKED
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.MAX_CAPACITY_REACHED
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_ALREADY_BOOKED
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT

@@ -1,6 +1,6 @@
-package com.codely.shared.error
+package com.codely.agenda.primaryadapter.rest.error
 
-object UserServerErrors {
+object AgendaServerErrors {
 
     // Agenda Module Errors
     val USER_ALREADY_BOOKED = Pair("10", "User already booked")
