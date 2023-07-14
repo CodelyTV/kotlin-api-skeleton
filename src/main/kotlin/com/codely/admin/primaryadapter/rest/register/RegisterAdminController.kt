@@ -44,7 +44,7 @@ class RegisterAdminController(
 
     private fun RegisterAdminError.toServerError(): ResponseEntity<*> =
         when (this) {
-            is Unknown -> throw throwable
+            is Unknown -> throw cause
             is InvalidUUID -> ResponseEntity.status(BAD_REQUEST).body(ServerError.of(INVALID_IDENTIFIERS))
         }
 }
