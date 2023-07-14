@@ -28,7 +28,7 @@ class SearchAgendasTest {
         `agendas exists for given week`()
 
         // When
-        val result = controller.search(agenda.week)
+        val result = controller.search(agenda.week, agenda.year)
 
         // Then
         assertEquals(HttpStatus.OK, result.statusCode)
@@ -40,7 +40,7 @@ class SearchAgendasTest {
         // Given
 
         // When
-        val result = controller.search(agenda.week)
+        val result = controller.search(agenda.week, agenda.year)
 
         // Then
         assertEquals(HttpStatus.OK, result.statusCode)
@@ -58,12 +58,12 @@ class SearchAgendasTest {
     }
 
     private val agenda = AgendaMother.random()
-    private val agenda2 = AgendaMother.random(week = agenda.week)
-    private val agenda3 = AgendaMother.random(week = agenda.week)
-    private val agenda4 = AgendaMother.random(week = agenda.week)
-    private val agenda5 = AgendaMother.random(week = agenda.week)
-    private val agenda6 = AgendaMother.random(week = agenda.week)
-    private val agenda7 = AgendaMother.random(week = agenda.week)
+    private val agenda2 = AgendaMother.random(week = agenda.week, year = agenda.year)
+    private val agenda3 = AgendaMother.random(week = agenda.week, year = agenda.year)
+    private val agenda4 = AgendaMother.random(week = agenda.week, year = agenda.year)
+    private val agenda5 = AgendaMother.random(week = agenda.week, year = agenda.year)
+    private val agenda6 = AgendaMother.random(week = agenda.week, year = agenda.year)
+    private val agenda7 = AgendaMother.random(week = agenda.week, year = agenda.year)
 
     private val expectedResponse = listOf(agenda, agenda2, agenda3, agenda4, agenda5, agenda6, agenda7)
 }
