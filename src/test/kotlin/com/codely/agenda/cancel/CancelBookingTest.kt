@@ -35,7 +35,7 @@ class CancelBookingTest {
         repository.save(fullAgenda)
 
         // When
-        val result = controller.cancel(fullAgenda.id.toString(), fullAgendaRequestBody)
+        val result = controller.cancel(fullAgenda.id, fullAgendaHourId, fullAgendaRequestBody)
 
         // Then
         assertEquals(OK, result.statusCode)
@@ -48,7 +48,7 @@ class CancelBookingTest {
         repository.save(emptyAgenda)
 
         // When
-        val result = controller.cancel(emptyAgenda.id.toString(), requestBody)
+        val result = controller.cancel(emptyAgenda.id, emptyAgendaHourId, requestBody)
 
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
@@ -61,7 +61,11 @@ class CancelBookingTest {
         .cancelBooking(fullAgenda.availableHours.first().id, player)
         .getOrElse { fullAgenda }
 
-    private val fullAgendaRequestBody = CancelBookingDTO(player.name, fullAgenda.availableHours.first().id)
+    private val fullAgendaHourId = fullAgenda.availableHours.first().id
+
+    private val fullAgendaRequestBody = CancelBookingDTO(player.name)
+
     private val emptyAgenda = AgendaMother.tuesday()
-    private val requestBody = CancelBookingDTO(player.name, emptyAgenda.availableHours.first().id)
+    private val emptyAgendaHourId = emptyAgenda.availableHours.first().id
+    private val requestBody = CancelBookingDTO(player.name)
 }

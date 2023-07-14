@@ -4,4 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface JpaAgendaRepository : MongoRepository<AgendaDocument, String>
+interface JpaAgendaRepository : MongoRepository<AgendaDocument, String> {
+    fun findAllByWeekAndYear(week: Int, year: Int): List<AgendaDocument>
+}

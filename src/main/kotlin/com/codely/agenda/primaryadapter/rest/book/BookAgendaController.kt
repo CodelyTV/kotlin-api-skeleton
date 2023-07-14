@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class BookAgendaController(private val repository: AgendaRepository) {
 
-    @PostMapping("/agenda/{id}/book")
-    fun bookAgenda(@PathVariable id: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
+    @PostMapping("/agendas/{agendaId}/hours/{hourId}")
+    fun bookAgenda(@PathVariable agendaId: UUID, @PathVariable hourId: UUID, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
             fold(
-                block = { handle(BookAgendaCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName)) },
+                block = { handle(BookAgendaCommand(id = agendaId, hourId = hourId, playerName = body.playerName)) },
                 recover = { error -> error.toServerError() },
                 transform = { agenda -> ResponseEntity.status(HttpStatus.OK).body(agenda) }
             )
