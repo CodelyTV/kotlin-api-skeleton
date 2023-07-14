@@ -101,7 +101,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
     // Password Encryption
-    implementation ("org.mindrot:jbcrypt:0.4")
+    implementation("org.mindrot:jbcrypt:0.4")
 
     // Functional Programming
     implementation("io.arrow-kt:arrow-core:1.2.0")
