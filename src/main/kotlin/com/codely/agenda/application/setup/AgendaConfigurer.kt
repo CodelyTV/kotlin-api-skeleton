@@ -12,7 +12,6 @@ import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 
-
 private val logger = KotlinLogging.logger {}
 
 context(AgendaRepository, Raise<ConfigureAgendaError>)
@@ -30,7 +29,7 @@ suspend fun configureAgenda(year: Year) {
                     .saveOrElse { error -> Unknown(error) }
                     .bind()
 
-                logger.info { "Agenda created for ${agenda.day.number}/${agenda.month.name}/${agenda.year} and week ${agenda.week}"}
+                logger.info { "Agenda created for ${agenda.day.number}/${agenda.month.name}/${agenda.year} and week ${agenda.week}" }
             }
         }
 }
