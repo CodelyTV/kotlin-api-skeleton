@@ -25,15 +25,15 @@ data class Agenda(
 ) {
 
     companion object {
-        fun create(id: UUID, day: Day) =
+        fun create(day: Day) =
             when (day.dayOfWeek.value) {
-                1 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.monday())
-                2 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.tuesday())
-                3 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.wednesday())
-                4 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.thursday())
-                5 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.friday())
-                6 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.saturday())
-                7 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), emptyList())
+                1 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.monday())
+                2 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.tuesday())
+                3 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.wednesday())
+                4 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.thursday())
+                5 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.friday())
+                6 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), AvailableHour.saturday())
+                7 -> Agenda(UUID.randomUUID(), day, currentMonth(), currentWeek(), currentYear(), emptyList())
                 else -> TODO()
             }
     }

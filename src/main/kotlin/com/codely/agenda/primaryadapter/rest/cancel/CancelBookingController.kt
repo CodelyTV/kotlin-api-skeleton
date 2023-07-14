@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController
 class CancelBookingController(private val repository: AgendaRepository) {
 
     @DeleteMapping("/agenda/{id}/book")
-    suspend fun cancel(@PathVariable id: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
+    fun cancel(@PathVariable id: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
             handle(CancelBookingCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName))
                 .toServerResponse(
