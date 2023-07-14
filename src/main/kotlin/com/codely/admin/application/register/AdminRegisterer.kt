@@ -26,5 +26,5 @@ suspend fun register(id: UUID, username: Username, password: Password) {
 
 sealed class RegisterAdminError {
     data object InvalidUUID : RegisterAdminError()
-    class Unknown(val throwable: Throwable) : RegisterAdminError()
+    class Unknown(val cause: Throwable) : RegisterAdminError()
 }
