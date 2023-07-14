@@ -8,7 +8,7 @@ import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
 import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
 import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
 import com.codely.agenda.application.book.BookAgendaError.Unknown
-import com.codely.agenda.application.book.handleDsl
+import com.codely.agenda.application.book.handle
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.shared.error.ServerError
 import com.codely.shared.error.UserServerErrors.AGENDA_DOES_NOT_EXIST
@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.RestController
 class BookAgendaController(private val repository: AgendaRepository) {
 
     @PostMapping("/agenda/{id}/book")
-    fun bookAgendaDsl(@PathVariable id: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
+    fun bookAgenda(@PathVariable id: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
             fold(
-                block = { handleDsl(BookAgendaCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName)) },
+                block = { handle(BookAgendaCommand(id = UUID.fromString(id), hourId = body.availableHourId, playerName = body.playerName)) },
                 recover = { error -> error.toServerError() },
                 transform = { agenda -> ResponseEntity.status(HttpStatus.OK).body(agenda) }
             )

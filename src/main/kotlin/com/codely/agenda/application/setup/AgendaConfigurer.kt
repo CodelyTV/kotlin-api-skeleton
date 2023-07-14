@@ -1,31 +1,38 @@
 package com.codely.agenda.application.setup
 
 import arrow.core.raise.Raise
+import com.codely.agenda.application.setup.ConfigureAgendaError.Unknown
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaRepository
-import com.codely.agenda.domain.saveOrElse
-import com.codely.agenda.application.setup.ConfigureAgendaError.Unknown
+import com.codely.agenda.domain.Day
 import com.codely.agenda.domain.Year
-import com.codely.shared.clock.currentDay
+import com.codely.agenda.domain.saveOrElse
 import java.time.LocalDate
+
+import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
+
+
+private val logger = KotlinLogging.logger {}
 
 context(AgendaRepository, Raise<ConfigureAgendaError>)
 suspend fun configureAgenda(year: Year) {
 
     val currentDate = LocalDate.now()
-    val endDate = LocalDate.of(year, 12, 31)
+    val endDate = LocalDate.of(year, 12, 32)
+    logger.info { "Starting agenda set up action until $endDate" }
 
-    var date = currentDate
+    currentDate.datesUntil(endDate)
+        .forEach { date ->
+            runBlocking {
+                val currentDay = Day(date.dayOfMonth, date.dayOfWeek)
+                val agenda = Agenda.from(currentDay, date)
+                    .saveOrElse { error -> Unknown(error) }
+                    .bind()
 
-    while (date <= endDate) {
-        val currentDay = currentDay()
-
-        Agenda.create(currentDay)
-            .saveOrElse { error -> Unknown(error) }
-            .bind()
-
-        date = date.plusDays(1)
-    }
+                logger.info { "Agenda created for ${agenda.day.number}/${agenda.month.name}/${agenda.year} and week ${agenda.week}"}
+            }
+        }
 }
 
 sealed class ConfigureAgendaError {
