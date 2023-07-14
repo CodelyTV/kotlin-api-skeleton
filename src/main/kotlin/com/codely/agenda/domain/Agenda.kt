@@ -10,6 +10,7 @@ import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
 import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
 import com.codely.shared.clock.currentMonth
+import com.codely.shared.clock.currentWeek
 import com.codely.shared.clock.currentYear
 import java.util.UUID
 import kotlinx.datetime.Month
@@ -18,6 +19,7 @@ data class Agenda(
     val id: UUID,
     val day: Day,
     val month: Month,
+    val week: Week,
     val year: Year,
     val availableHours: List<AvailableHour> = emptyList()
 ) {
@@ -25,13 +27,13 @@ data class Agenda(
     companion object {
         fun create(id: UUID, day: Day) =
             when (day.dayOfWeek.value) {
-                1 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.monday())
-                2 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.tuesday())
-                3 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.wednesday())
-                4 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.thursday())
-                5 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.friday())
-                6 -> Agenda(id, day, currentMonth(), currentYear(), AvailableHour.saturday())
-                7 -> Agenda(id, day, currentMonth(), currentYear(), emptyList())
+                1 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.monday())
+                2 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.tuesday())
+                3 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.wednesday())
+                4 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.thursday())
+                5 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.friday())
+                6 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), AvailableHour.saturday())
+                7 -> Agenda(id, day, currentMonth(), currentWeek(), currentYear(), emptyList())
                 else -> TODO()
             }
     }
@@ -135,9 +137,11 @@ data class AvailableHour(
 }
 
 @JvmInline
-value class Player(val value: String)
+value class Player(val name: String)
 
 typealias Year = Int
+
+typealias Week = Int
 
 enum class HourType { TEAM_TRAINING, ADULT_ACADEMY, KIDS_ACADEMY, MEMBERS_TIME }
 

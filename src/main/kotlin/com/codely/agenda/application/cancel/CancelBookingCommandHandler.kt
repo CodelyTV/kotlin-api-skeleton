@@ -8,6 +8,6 @@ import java.util.UUID
 
 context(AgendaRepository)
 suspend fun handle(command: CancelBookingCommand): Either<CancelBookingError, Agenda> =
-    cancelBooking(id = command.id, name = Player(value = command.playerName), hourId = command.hourId)
+    cancelBooking(id = command.id, name = Player(name = command.playerName), hourId = command.hourId)
 
 data class CancelBookingCommand(val id: UUID, val hourId: UUID, val playerName: String)

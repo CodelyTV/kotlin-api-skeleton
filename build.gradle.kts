@@ -94,7 +94,7 @@ dependencies {
 
     implementation("com.diffplug.spotless:spotless-plugin-gradle:6.9.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.7.2")
 
     // KotlinX
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
@@ -102,7 +102,6 @@ dependencies {
     // Functional Programming
     implementation("io.arrow-kt:arrow-core:1.2.0")
     implementation("io.arrow-kt:arrow-fx-coroutines:1.1.2")
-    implementation("io.arrow-kt:arrow-fx-stm:1.1.2")
 
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")

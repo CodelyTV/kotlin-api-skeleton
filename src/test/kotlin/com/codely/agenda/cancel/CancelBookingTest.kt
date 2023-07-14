@@ -61,7 +61,7 @@ class CancelBookingTest {
         .cancelBooking(fullAgenda.availableHours.first().id, player)
         .getOrElse { fullAgenda }
 
-    private val fullAgendaRequestBody = CancelBookingDTO(player.value, fullAgenda.availableHours.first().id)
+    private val fullAgendaRequestBody = CancelBookingDTO(player.name, fullAgenda.availableHours.first().id)
     private val emptyAgenda = AgendaMother.tuesday()
-    private val requestBody = CancelBookingDTO(player.value, emptyAgenda.availableHours.first().id)
+    private val requestBody = CancelBookingDTO(player.name, emptyAgenda.availableHours.first().id)
 }
