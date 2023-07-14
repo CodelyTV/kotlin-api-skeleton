@@ -47,7 +47,6 @@ jobs:
             docker rm $container_id
             docker pull rafagomezp/tt-sant-andreu
             docker run -d -p 8080:8080 rafagomezp/tt-sant-andreu
-            - name: Add OpenTelemetry to the application
 
       - name: Install Open Telemetry
         run: >
