@@ -38,7 +38,7 @@ data class Agenda(
     }
 
     fun disable(): Agenda = copy(availableHours = emptyList())
-    fun enable(): Agenda = copy(availableHours = AvailableHour.fromDay(day))
+    fun reenable(): Agenda = copy(availableHours = AvailableHour.fromDay(day))
 
     fun bookAvailableHour(
         availableHourId: UUID,

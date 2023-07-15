@@ -7,3 +7,5 @@ inline fun <E, R> Either<E, R>.toServerResponse(
     onValidResponse: (R) -> ResponseEntity<*>,
     onError: (E) -> ResponseEntity<*>
 ): ResponseEntity<*> = fold({ onError(it) }, { onValidResponse(it) })
+
+typealias Response<T> = ResponseEntity<T>

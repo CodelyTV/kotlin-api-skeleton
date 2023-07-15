@@ -48,7 +48,7 @@ class BookAgendaController(private val repository: AgendaRepository) {
             is PlayerAlreadyBooked -> ResponseEntity.status(CONFLICT).body(ServerError.of(USER_ALREADY_BOOKED))
             is AgendaNotFound -> ResponseEntity.status(NOT_FOUND).body(ServerError.of(AGENDA_DOES_NOT_EXIST))
             is AvailableHourNotFound -> ResponseEntity.status(NOT_FOUND).body(ServerError.of(AVAILABLE_HOUR_DOES_NOT_EXIST))
-            is Unknown -> throw cause
             is InvalidUUID -> ResponseEntity.status(BAD_REQUEST).body(ServerError.of(INVALID_IDENTIFIERS))
+            is Unknown -> throw cause
         }
 }
