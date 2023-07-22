@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class SearchAgendaController(private val repository: AgendaRepository) {
 
     @GetMapping("/agendas")
-    @CrossOrigin(allowCredentials = "true", origins = ["*"], allowedHeaders = ["*"], methods = [RequestMethod.POST, RequestMethod.OPTIONS])
+    @CrossOrigin(allowCredentials = "true", originPatterns = ["*"], allowedHeaders = ["*"], methods = [RequestMethod.POST, RequestMethod.OPTIONS])
     fun search(@RequestParam week: Int, @RequestParam year: Int): ResponseEntity<*> = runBlocking {
         with(repository) {
             fold(
