@@ -23,21 +23,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 //    }
 //}
 
-@Configuration
-@EnableWebSecurity
-class WebSecurityConfig {
-
-    @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeRequests {
-            it.antMatchers()
-                .permitAll()
-                .and()
-                .csrf()
-                .disable()
-        }
-
-        http.cors()
-        return http.build();
-    }
-}
+//@Configuration
+//@EnableWebSecurity
+//class WebSecurityConfig {
+//
+//    @Bean
+//    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+//        http.cors()
+//        return http.build();
+//    }
+//}
