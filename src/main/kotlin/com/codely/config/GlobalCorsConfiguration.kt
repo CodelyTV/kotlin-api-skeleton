@@ -29,9 +29,9 @@ public class WebSecurityConfig {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .cors()
+        http.httpBasic();
+        http.cors()
 
-        return http.build()
+        return http.build();
     }
 }
