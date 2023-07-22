@@ -159,5 +159,4 @@ typealias Week = Int
 
 enum class HourType { TEAM_TRAINING, ADULT_ACADEMY, KIDS_ACADEMY, MEMBERS_TIME }
 
-@JvmInline
-value class MaxCapacity(val value: Int = 8)
+data class MaxCapacity(val value: Int = 8)
