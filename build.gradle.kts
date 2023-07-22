@@ -96,7 +96,6 @@ dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:6.9.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.7.2")
-    implementation("org.springframework.boot:spring-boot-starter-security")
 
     // KotlinX
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
