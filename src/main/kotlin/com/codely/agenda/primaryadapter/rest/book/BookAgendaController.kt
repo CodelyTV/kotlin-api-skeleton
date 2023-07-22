@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class BookAgendaController(private val repository: AgendaRepository) {
 
+    @CrossOrigin
     @PostMapping("/agendas/{agendaId}/hours/{hourId}")
     fun bookAgenda(@PathVariable agendaId: String, @PathVariable hourId: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {
         with(repository) {

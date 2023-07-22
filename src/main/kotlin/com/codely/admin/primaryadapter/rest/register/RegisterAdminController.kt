@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,6 +28,7 @@ class RegisterAdminController(
     private val passwordEncrypter: PasswordEncrypter
 ) {
 
+    @CrossOrigin
     @PostMapping("/admins/{adminId}")
     fun register(@PathVariable adminId: String, @RequestBody body: RegisterAdminDTO): ResponseEntity<*> = runBlocking {
         with(repository) {

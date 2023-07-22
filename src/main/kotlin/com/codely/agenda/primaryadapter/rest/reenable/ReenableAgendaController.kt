@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
@@ -33,6 +34,7 @@ class ReenableAgendaController(
     private val adminRepository: AdminRepository
 ) {
 
+    @CrossOrigin
     @PatchMapping("/agendas/{agendaId}/reenable")
     fun reenableAgenda(@PathVariable agendaId: String, @RequestParam accessKey: String): ResponseEntity<*> = runBlocking {
         with(repository) {

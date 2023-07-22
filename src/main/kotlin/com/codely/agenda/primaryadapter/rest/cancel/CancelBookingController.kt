@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CancelBookingController(private val repository: AgendaRepository) {
 
+    @CrossOrigin
     @DeleteMapping("/agendas/{agendaId}/hours/{hourId}")
     fun cancel(@PathVariable agendaId: String, @PathVariable hourId: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
