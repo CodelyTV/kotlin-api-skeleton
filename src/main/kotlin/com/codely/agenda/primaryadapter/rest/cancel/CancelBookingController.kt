@@ -15,6 +15,7 @@ import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOE
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_NOT_BOOKED
+import com.codely.shared.cors.BaseController
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class CancelBookingController(private val repository: AgendaRepository) {
+class CancelBookingController(private val repository: AgendaRepository) : BaseController() {
 
     @DeleteMapping("/agendas/{agendaId}/hours/{hourId}")
     fun cancel(@PathVariable agendaId: String, @PathVariable hourId: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {

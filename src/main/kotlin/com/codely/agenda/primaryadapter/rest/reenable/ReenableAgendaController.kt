@@ -14,6 +14,7 @@ import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
 import com.codely.shared.authorization.executeIfAllowed
+import com.codely.shared.cors.BaseController
 import com.codely.shared.error.ServerError
 import com.codely.shared.response.Response
 import kotlinx.coroutines.runBlocking
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 class ReenableAgendaController(
     private val repository: AgendaRepository,
     private val adminRepository: AdminRepository
-) {
+) : BaseController() {
 
     @PatchMapping("/agendas/{agendaId}/reenable")
     fun reenableAgenda(@PathVariable agendaId: String, @RequestParam accessKey: String): ResponseEntity<*> = runBlocking {

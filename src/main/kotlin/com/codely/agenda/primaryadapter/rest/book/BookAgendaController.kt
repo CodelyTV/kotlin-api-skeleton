@@ -17,6 +17,7 @@ import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.MAX_CAPACITY_REACHED
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_ALREADY_BOOKED
+import com.codely.shared.cors.BaseController
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BookAgendaController(private val repository: AgendaRepository) {
+class BookAgendaController(private val repository: AgendaRepository) : BaseController() {
 
     @PostMapping("/agendas/{agendaId}/hours/{hourId}")
     fun bookAgenda(@PathVariable agendaId: String, @PathVariable hourId: String, @RequestBody body: BookAgendaDTO): ResponseEntity<*> = runBlocking {

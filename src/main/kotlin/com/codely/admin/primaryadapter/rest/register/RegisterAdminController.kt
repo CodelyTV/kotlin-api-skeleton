@@ -10,6 +10,7 @@ import com.codely.admin.domain.AccessKeyGenerator
 import com.codely.admin.domain.AdminRepository
 import com.codely.admin.domain.PasswordEncrypter
 import com.codely.admin.primaryadapter.rest.error.AdminServerErrors.INVALID_IDENTIFIERS
+import com.codely.shared.cors.BaseController
 import com.codely.shared.error.ServerError
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus
@@ -25,7 +26,7 @@ class RegisterAdminController(
     private val repository: AdminRepository,
     private val accessKeyGenerator: AccessKeyGenerator,
     private val passwordEncrypter: PasswordEncrypter
-) {
+) : BaseController() {
 
     @PostMapping("/admins/{adminId}")
     fun register(@PathVariable adminId: String, @RequestBody body: RegisterAdminDTO): ResponseEntity<*> = runBlocking {
