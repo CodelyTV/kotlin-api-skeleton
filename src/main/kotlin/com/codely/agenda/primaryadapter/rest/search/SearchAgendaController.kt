@@ -6,20 +6,18 @@ import com.codely.agenda.application.search.SearchAgendaError.Unknown
 import com.codely.agenda.application.search.SearchAgendasQuery
 import com.codely.agenda.application.search.handle
 import com.codely.agenda.domain.AgendaRepository
+import com.codely.shared.cors.BaseController
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class SearchAgendaController(private val repository: AgendaRepository) {
+class SearchAgendaController(private val repository: AgendaRepository) : BaseController() {
 
     @GetMapping("/agendas")
-    @CrossOrigin(allowCredentials = "true", originPatterns = ["*"], allowedHeaders = ["*"], methods = [RequestMethod.GET, RequestMethod.OPTIONS])
     fun search(@RequestParam week: Int, @RequestParam year: Int): ResponseEntity<*> = runBlocking {
         with(repository) {
             fold(
