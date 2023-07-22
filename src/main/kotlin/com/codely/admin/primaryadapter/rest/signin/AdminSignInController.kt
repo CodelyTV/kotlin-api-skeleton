@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class AdminSignInController(private val repository: AdminRepository) {
 
     @PostMapping("/admins/sign-in", headers = ["Authorization"])
+    @CrossOrigin
     fun signIn(@RequestHeader("Authorization") authHeader: String): ResponseEntity<*> = runBlocking {
         with(repository) {
             val (username, password) = extractCredentials(authHeader)
