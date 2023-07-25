@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CancelBookingController(private val repository: AgendaRepository) : BaseController() {
 
-    @DeleteMapping("/agendas/{agendaId}/hours/{hourId}")
+    @PatchMapping("/agendas/{agendaId}/hours/{hourId}")
     fun cancel(@PathVariable agendaId: String, @PathVariable hourId: String, @RequestBody body: CancelBookingDTO): ResponseEntity<*> = runBlocking {
         with(repository) {
             fold(
