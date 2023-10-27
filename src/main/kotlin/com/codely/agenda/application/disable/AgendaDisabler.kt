@@ -16,7 +16,6 @@ suspend fun disableAgenda(id: UUID): Agenda {
         .also { disabledAgenda -> save(disabledAgenda) }
 }
 
-
 sealed class DisableAgendaError {
     data object InvalidUUID : DisableAgendaError()
     data object AgendaNotFound : DisableAgendaError()

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface JpaAdminRepository : MongoRepository<AdminDocument, String> {
     fun findByUsername(username: String): AdminDocument
-    fun findByAccessKey(accessKey: String): AdminDocument
+    fun findByAccessKey(accessKey: String): AdminDocument?
 }
