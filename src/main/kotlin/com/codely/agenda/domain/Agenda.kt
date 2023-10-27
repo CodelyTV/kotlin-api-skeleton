@@ -23,7 +23,6 @@ data class Agenda(
 ) {
 
     companion object {
-
         fun from(day: Day, localDate: LocalDate) =
             Agenda(
                 UUID.randomUUID(),

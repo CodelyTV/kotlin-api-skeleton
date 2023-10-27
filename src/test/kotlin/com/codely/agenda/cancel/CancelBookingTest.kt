@@ -1,6 +1,6 @@
 package com.codely.agenda.cancel
 
-import arrow.core.raise.fold
+import arrow.core.raise.recover
 import com.codely.agenda.AgendaMother
 import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
@@ -58,10 +58,9 @@ class CancelBookingTest {
     private val player = Player("Exposito")
     private val fullAgenda = AgendaMother.fullyBooked()
     private val expectedAgenda =
-        fold(
+        recover(
             block = { fullAgenda.cancelBooking(fullAgenda.availableHours.first().id, player) },
-            recover = { fullAgenda },
-            transform = { it }
+            recover = { fullAgenda }
         )
 
     private val fullAgendaHourId = fullAgenda.availableHours.first().id

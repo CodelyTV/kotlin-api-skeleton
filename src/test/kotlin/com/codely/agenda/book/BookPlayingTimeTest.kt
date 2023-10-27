@@ -1,6 +1,6 @@
 package com.codely.agenda.book
 
-import arrow.core.raise.fold
+import arrow.core.raise.recover
 import com.codely.agenda.AgendaMother
 import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
@@ -64,11 +64,7 @@ class BookPlayingTimeTest {
     fun `should not add a player to an available hour twice`() = runTest {
         // Given
         val updatedAgenda =
-            fold(
-                block = { agenda.bookAvailableHour(hourId, Player("Rafa")) },
-                recover = { agenda },
-                transform = { it }
-            )
+            recover({ agenda.bookAvailableHour(hourId, Player("Rafa")) }, { agenda })
 
         repository.save(updatedAgenda)
 
@@ -84,11 +80,7 @@ class BookPlayingTimeTest {
     fun `should not add a player to consecutive available hours`() = runTest {
         // Given
         val updatedAgenda =
-            fold(
-                block = { agenda.bookAvailableHour(hourId, Player("Rafa")) },
-                recover = { agenda },
-                transform = { it }
-            )
+            recover({ agenda.bookAvailableHour(hourId, Player("Rafa")) }, { agenda })
 
         repository.save(updatedAgenda)
 
@@ -135,9 +127,5 @@ class BookPlayingTimeTest {
     private val fullAgendaRequestBody = BookAgendaDTO("Rafa")
 
     private val expectedAgenda =
-        fold(
-            block = { agenda.bookAvailableHour(hourId, Player("Rafa")) },
-            recover = { agenda },
-            transform = { it }
-        )
+        recover({ agenda.bookAvailableHour(hourId, Player("Rafa")) }, { agenda })
 }
