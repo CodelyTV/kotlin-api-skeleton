@@ -8,21 +8,19 @@ import com.codely.agenda.application.reenable.ReenableAgendaError
 import com.codely.agenda.application.reenable.ReenableAgendaError.AgendaNotFound
 import com.codely.agenda.application.reenable.ReenableAgendaError.ForbiddenAction
 import com.codely.agenda.application.reenable.ReenableAgendaError.InvalidUUID
-import com.codely.agenda.application.reenable.ReenableAgendaError.Unknown
 import com.codely.agenda.application.reenable.handle
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
 import com.codely.shared.authorization.executeIfAllowed
 import com.codely.shared.cors.BaseController
-import com.codely.shared.error.ServerError
 import com.codely.shared.response.Response
+import com.codely.shared.response.withBody
 import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,7 +33,7 @@ class ReenableAgendaController(
 ) : BaseController() {
 
     @PatchMapping("/agendas/{agendaId}/reenable")
-    fun reenableAgenda(@PathVariable agendaId: String, @RequestParam accessKey: String): ResponseEntity<*> = runBlocking {
+    fun reenableAgenda(@PathVariable agendaId: String, @RequestParam accessKey: String): Response<*> = runBlocking {
         with(repository) {
             with(adminRepository) {
                 fold(
@@ -47,7 +45,7 @@ class ReenableAgendaController(
                         )
                     },
                     recover = { error -> error.toServerError() },
-                    transform = { agenda -> ResponseEntity.status(OK).body(agenda) }
+                    transform = { agenda -> Response.status(OK).body(agenda) }
                 )
             }
         }
@@ -55,9 +53,8 @@ class ReenableAgendaController(
 
     private fun ReenableAgendaError.toServerError() =
         when (this) {
-            is AgendaNotFound -> Response.status(NOT_FOUND).body(ServerError.of(AGENDA_DOES_NOT_EXIST))
-            is InvalidUUID -> Response.status(BAD_REQUEST).body(ServerError.of(INVALID_IDENTIFIERS))
-            is ForbiddenAction -> Response.status(FORBIDDEN).body(ServerError.of(INVALID_ACCESS_KEY))
-            is Unknown -> throw cause
+            is AgendaNotFound -> Response.status(NOT_FOUND).withBody(AGENDA_DOES_NOT_EXIST)
+            is InvalidUUID -> Response.status(BAD_REQUEST).withBody(INVALID_IDENTIFIERS)
+            is ForbiddenAction -> Response.status(FORBIDDEN).withBody(INVALID_ACCESS_KEY)
         }
 }

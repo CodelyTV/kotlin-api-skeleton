@@ -116,6 +116,8 @@ dependencies {
         because("provides good testing for arrow")
     }
 
+    testImplementation("in.rcard:assertj-arrow-core:0.2.0")
+
     // Coroutines
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
