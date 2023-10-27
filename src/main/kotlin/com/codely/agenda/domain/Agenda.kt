@@ -7,6 +7,7 @@ import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
 import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
 import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
+import com.codely.agenda.domain.HourType.MEMBERS_TIME
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -81,11 +82,11 @@ data class Agenda(
 
 data class AvailableHour(
     val id: UUID = UUID.randomUUID(),
-    val from: Int, // 4
-    val to: Int, // 5
+    val from: Int,
+    val to: Int,
     val capacity: MaxCapacity = MaxCapacity(8),
     val type: HourType,
-    val registeredPlayers: List<Player> // max size depends on capacity
+    val registeredPlayers: List<Player>
 ) {
 
     fun addPlayer(player: Player): AvailableHour = copy(registeredPlayers = registeredPlayers + player)
@@ -101,42 +102,35 @@ data class AvailableHour(
                 3 -> wednesday()
                 4 -> thursday()
                 5 -> friday()
-                6 -> saturday()
+                6 -> emptyList()
                 7 -> emptyList()
-                else -> TODO()
+                else -> throw IllegalArgumentException("")
             }
 
         fun monday() = listOf(
-            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
 
         fun tuesday() = listOf(
-            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 18, to = 19, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 18, to = 19, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
 
         fun wednesday() = listOf(
-            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
 
         fun thursday() = listOf(
-            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
 
         fun friday() = listOf(
-            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
-        )
-
-        fun saturday() = listOf(
-            AvailableHour(from = 10, to = 11, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 11, to = 12, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 12, to = 13, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME),
-            AvailableHour(from = 13, to = 14, registeredPlayers = emptyList(), type = HourType.MEMBERS_TIME)
+            AvailableHour(from = 16, to = 17, registeredPlayers = emptyList(), type = MEMBERS_TIME),
+            AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
     }
 }
@@ -146,11 +140,9 @@ value class Player private constructor(val name: String) {
     companion object {
         operator fun invoke(name: String): Player {
             val nameParts = name.trim().split(" ")
-            return when {
-                nameParts.size == 1 -> Player(name)
-                nameParts.size >= 2 -> Player("${nameParts[0].first()}. ${nameParts[1]}")
-                else -> Player(name)
-            }
+
+            return if (nameParts.size >= 2) Player("${nameParts[0].first()}. ${nameParts[1]}")
+            else Player(name)
         }
     }
 }
