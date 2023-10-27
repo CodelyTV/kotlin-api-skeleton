@@ -6,14 +6,16 @@ import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria.ById
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.domain.findOrElse
-import com.codely.agenda.domain.save
 import java.util.UUID
 
 context(AgendaRepository, Raise<DisableAgendaError>)
-suspend fun disableAgenda(id: UUID): Agenda =
-    findOrElse(ById(id)) { AgendaNotFound }
-        .disable()
-        .save()
+suspend fun disableAgenda(id: UUID): Agenda {
+    val agenda = findOrElse(ById(id)) { AgendaNotFound }
+
+    return agenda.disable()
+        .also { disabledAgenda -> save(disabledAgenda) }
+}
+
 
 sealed class DisableAgendaError {
     data object InvalidUUID : DisableAgendaError()

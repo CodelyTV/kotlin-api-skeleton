@@ -145,8 +145,7 @@ data class AvailableHour(
 value class Player private constructor(val name: String) {
     companion object {
         operator fun invoke(name: String): Player {
-            val nameParts = name.split(" ")
-
+            val nameParts = name.trim().split(" ")
             return when {
                 nameParts.size == 1 -> Player(name)
                 nameParts.size >= 2 -> Player("${nameParts[0].first()}. ${nameParts[1]}")

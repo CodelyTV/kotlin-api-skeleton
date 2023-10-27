@@ -9,12 +9,11 @@ interface AgendaRepository {
     suspend fun save(agenda: Agenda)
 }
 
-context(AgendaRepository)
-suspend fun Agenda.save(): Agenda =
-    save(this).let { this }
+suspend fun AgendaRepository.save(agenda: Agenda): Agenda =
+    save(agenda).let { agenda }
 
-context(AgendaRepository, Raise<Error>)
-suspend fun <Error> findOrElse(criteria: AgendaFindByCriteria, onError: () -> Error): Agenda =
+context(Raise<Error>)
+suspend fun <Error> AgendaRepository.findOrElse(criteria: AgendaFindByCriteria, onError: () -> Error): Agenda =
     find(criteria) ?: raise(onError())
 
 sealed class AgendaFindByCriteria {
