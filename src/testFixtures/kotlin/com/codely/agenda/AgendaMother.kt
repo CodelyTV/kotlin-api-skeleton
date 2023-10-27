@@ -25,7 +25,6 @@ object AgendaMother {
     fun wednesday(day: Day = DayMother.wednesday()) = random(day = day, availableHours = AvailableHour.wednesday())
     fun thursday(day: Day = DayMother.thursday()) = random(day = day, availableHours = AvailableHour.thursday())
     fun friday(day: Day = DayMother.friday()) = random(day = day, availableHours = AvailableHour.friday())
-    fun saturday(day: Day = DayMother.saturday()) = random(day = day, availableHours = AvailableHour.saturday())
 
     fun fullyBooked() = random(availableHours = AvailableHourMother.fullPlayerList())
 }
