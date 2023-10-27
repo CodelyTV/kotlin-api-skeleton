@@ -142,7 +142,19 @@ data class AvailableHour(
 }
 
 @JvmInline
-value class Player(val name: String)
+value class Player private constructor(val name: String) {
+    companion object {
+        operator fun invoke(name: String): Player {
+            val nameParts = name.split(" ")
+
+            return when {
+                nameParts.size == 1 -> Player(name)
+                nameParts.size >= 2 -> Player("${nameParts[0].first()}. ${nameParts[1]}")
+                else -> Player(name)
+            }
+        }
+    }
+}
 
 typealias Year = Int
 
