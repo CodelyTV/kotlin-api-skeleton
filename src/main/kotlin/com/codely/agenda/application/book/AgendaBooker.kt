@@ -6,11 +6,12 @@ import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria.ById
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.domain.Player
+import com.codely.agenda.domain.findOrElse
 import java.util.UUID
 
 context(AgendaRepository, Raise<BookAgendaError>)
 suspend fun bookAgenda(id: UUID, name: Player, hourId: UUID): Agenda {
-    val agenda = find(ById(id)) ?: raise(AgendaNotFound)
+    val agenda = findOrElse(ById(id)) { AgendaNotFound }
 
     return agenda.bookAvailableHour(hourId, name)
         .also { agenda -> save(agenda) }
