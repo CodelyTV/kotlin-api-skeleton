@@ -1,13 +1,13 @@
 package com.codely.agenda.cancel
 
-import arrow.core.getOrElse
+import arrow.core.raise.recover
+import com.codely.agenda.AgendaMother
 import com.codely.agenda.domain.Player
 import com.codely.agenda.fakes.FakeAgendaRepository
-import com.codely.agenda.AgendaMother
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingController
 import com.codely.agenda.primaryadapter.rest.cancel.CancelBookingDTO
-import com.codely.shared.error.ServerError
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_NOT_BOOKED
+import com.codely.shared.error.ServerError
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,9 +57,11 @@ class CancelBookingTest {
 
     private val player = Player("Exposito")
     private val fullAgenda = AgendaMother.fullyBooked()
-    private val expectedAgenda = fullAgenda
-        .cancelBooking(fullAgenda.availableHours.first().id, player)
-        .getOrElse { fullAgenda }
+    private val expectedAgenda =
+        recover(
+            block = { fullAgenda.cancelBooking(fullAgenda.availableHours.first().id, player) },
+            recover = { fullAgenda }
+        )
 
     private val fullAgendaHourId = fullAgenda.availableHours.first().id
 

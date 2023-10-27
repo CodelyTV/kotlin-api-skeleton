@@ -1,15 +1,12 @@
 package com.codely.agenda.primaryadapter.rest.search
 
-import arrow.core.raise.fold
-import com.codely.agenda.application.search.SearchAgendaError
-import com.codely.agenda.application.search.SearchAgendaError.Unknown
 import com.codely.agenda.application.search.SearchAgendasQuery
 import com.codely.agenda.application.search.handle
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.shared.cors.BaseController
+import com.codely.shared.response.Response
 import kotlinx.coroutines.runBlocking
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus.OK
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -18,18 +15,10 @@ import org.springframework.web.bind.annotation.RestController
 class SearchAgendaController(private val repository: AgendaRepository) : BaseController() {
 
     @GetMapping("/agendas")
-    fun search(@RequestParam week: Int, @RequestParam year: Int): ResponseEntity<*> = runBlocking {
+    fun search(@RequestParam week: Int, @RequestParam year: Int): Response<*> = runBlocking {
         with(repository) {
-            fold(
-                block = { handle(SearchAgendasQuery(week, year)) },
-                recover = { error -> error.toServerError() },
-                transform = { agendas -> ResponseEntity.status(HttpStatus.OK).body(agendas) }
-            )
+            handle(SearchAgendasQuery(week, year))
+                .let { agendas -> Response.status(OK).body(agendas) }
         }
     }
-
-    private fun SearchAgendaError.toServerError(): ResponseEntity<*> =
-        when (this) {
-            is Unknown -> throw cause
-        }
 }

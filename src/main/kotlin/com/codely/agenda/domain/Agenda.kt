@@ -1,8 +1,6 @@
 package com.codely.agenda.domain
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import arrow.core.raise.Raise
 import com.codely.agenda.application.book.BookAgendaError
 import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
 import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
@@ -25,7 +23,6 @@ data class Agenda(
 ) {
 
     companion object {
-
         fun from(day: Day, localDate: LocalDate) =
             Agenda(
                 UUID.randomUUID(),
@@ -40,19 +37,14 @@ data class Agenda(
     fun disable(): Agenda = copy(availableHours = emptyList())
     fun reenable(): Agenda = copy(availableHours = AvailableHour.fromDay(day))
 
-    fun bookAvailableHour(
-        availableHourId: UUID,
-        player: Player
-    ): Either<BookAgendaError, Agenda> {
+    context(Raise<BookAgendaError>)
+    fun bookAvailableHour(availableHourId: UUID, player: Player): Agenda {
         val availableHour = availableHours.find { it.id == availableHourId }
 
-        return if (availableHours.any { hour -> player in hour.registeredPlayers })
-            PlayerAlreadyBooked.left()
+        if (availableHours.any { hour -> player in hour.registeredPlayers }) raise(PlayerAlreadyBooked)
 
-        else availableHour?.let { hour ->
-            if (hour.maxCapacityReached()) {
-                return MaxCapacityReached.left()
-            }
+        return availableHour?.let { hour ->
+            if (hour.maxCapacityReached()) raise(MaxCapacityReached)
 
             val updatedHour = hour.addPlayer(player)
             val updatedHours = availableHours.toMutableList()
@@ -61,20 +53,19 @@ data class Agenda(
                     set(index, updatedHour)
                 }
 
-            copy(availableHours = updatedHours).right()
-        } ?: AvailableHourNotFound.left()
+            copy(availableHours = updatedHours)
+        } ?: raise(AvailableHourNotFound)
     }
 
+    context(Raise<CancelBookingError>)
     fun cancelBooking(
         availableHourId: UUID,
         playerName: Player
-    ): Either<CancelBookingError, Agenda> {
+    ): Agenda {
         val availableHour = availableHours.find { it.id == availableHourId }
 
         return availableHour?.let { hour ->
-            if (playerName !in hour.registeredPlayers) {
-                return PlayerNotBooked.left()
-            }
+            if (playerName !in hour.registeredPlayers) raise(PlayerNotBooked)
 
             val updatedHour = hour.removePlayer(playerName)
             val updatedHours = availableHours.toMutableList()
@@ -83,8 +74,8 @@ data class Agenda(
                     set(index, updatedHour)
                 }
 
-            copy(availableHours = updatedHours).right()
-        } ?: CancelBookingError.AvailableHourNotFound.left()
+            copy(availableHours = updatedHours)
+        } ?: raise(CancelBookingError.AvailableHourNotFound)
     }
 }
 

@@ -1,14 +1,12 @@
 package com.codely.agenda.application.setup
 
 import arrow.core.raise.Raise
-import com.codely.agenda.application.setup.ConfigureAgendaError.Unknown
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.domain.Day
 import com.codely.agenda.domain.Year
-import com.codely.agenda.domain.saveOrElse
+import com.codely.agenda.domain.save
 import java.time.LocalDate
-
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 
@@ -26,8 +24,7 @@ suspend fun configureAgenda(year: Year) {
             runBlocking {
                 val currentDay = Day(date.dayOfMonth, date.dayOfWeek)
                 val agenda = Agenda.from(currentDay, date)
-                    .saveOrElse { error -> Unknown(error) }
-                    .bind()
+                    .save()
 
                 logger.info { "Agenda created for ${agenda.day.number}/${agenda.month.name}/${agenda.year} and week ${agenda.week}" }
             }
