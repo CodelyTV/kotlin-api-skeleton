@@ -5,6 +5,7 @@ import com.codely.agenda.application.cancel.CancelBookingCommand
 import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.application.cancel.CancelBookingError.AgendaNotFound
 import com.codely.agenda.application.cancel.CancelBookingError.AvailableHourNotFound
+import com.codely.agenda.application.cancel.CancelBookingError.InvalidPlayerName
 import com.codely.agenda.application.cancel.CancelBookingError.InvalidUUID
 import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
 import com.codely.agenda.application.cancel.handle
@@ -12,6 +13,7 @@ import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_PLAYER_NAME
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_NOT_BOOKED
 import com.codely.shared.cors.BaseController
 import com.codely.shared.response.Response
@@ -45,5 +47,6 @@ class CancelBookingController(private val repository: AgendaRepository) : BaseCo
             is AvailableHourNotFound -> Response.status(NOT_FOUND).withBody(AVAILABLE_HOUR_DOES_NOT_EXIST)
             is PlayerNotBooked -> Response.status(NOT_FOUND).withBody(USER_NOT_BOOKED)
             is InvalidUUID -> Response.status(BAD_REQUEST).withBody(INVALID_IDENTIFIERS)
+            is InvalidPlayerName -> Response.status(BAD_REQUEST).withBody(INVALID_PLAYER_NAME)
         }
 }

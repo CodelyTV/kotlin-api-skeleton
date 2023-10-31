@@ -136,9 +136,12 @@ data class AvailableHour(
 }
 
 @JvmInline
-value class Player private constructor(val name: String) {
+value class Player(val name: String) {
     companion object {
-        operator fun invoke(name: String): Player {
+        context(Raise<Error>)
+        fun <Error> createOrElse(name: String, onError: () -> Error): Player {
+            if (name.isBlank()) raise(onError())
+
             val nameParts = name.trim().split(" ")
 
             return if (nameParts.size >= 2) Player("${nameParts[0].first()}. ${nameParts[1]}")

@@ -19,6 +19,7 @@ suspend fun bookAgenda(id: UUID, name: Player, hourId: UUID): Agenda {
 
 sealed class BookAgendaError {
     data object InvalidUUID : BookAgendaError()
+    data object InvalidPlayerName : BookAgendaError()
     data object AgendaNotFound : BookAgendaError()
     data object MaxCapacityReached : BookAgendaError()
     data object PlayerAlreadyBooked : BookAgendaError()

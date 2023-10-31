@@ -19,6 +19,7 @@ suspend fun cancelBooking(id: UUID, name: Player, hourId: UUID): Agenda {
 
 sealed class CancelBookingError {
     data object InvalidUUID : CancelBookingError()
+    data object InvalidPlayerName : CancelBookingError()
     data object AgendaNotFound : CancelBookingError()
     data object AvailableHourNotFound : CancelBookingError()
     data object PlayerNotBooked : CancelBookingError()
