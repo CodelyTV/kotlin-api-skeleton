@@ -9,4 +9,5 @@ object AgendaServerErrors {
     val USER_NOT_BOOKED = Pair("13", "User wasn't booked")
     val AVAILABLE_HOUR_DOES_NOT_EXIST = Pair("14", "Available hour does not exist")
     val INVALID_IDENTIFIERS = Pair("16", "Invalid Identifiers")
+    val INVALID_PLAYER_NAME = Pair("17", "Invalid Player Name")
 }

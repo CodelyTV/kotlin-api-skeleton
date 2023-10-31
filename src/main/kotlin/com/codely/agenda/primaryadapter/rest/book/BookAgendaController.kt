@@ -5,6 +5,7 @@ import com.codely.agenda.application.book.BookAgendaCommand
 import com.codely.agenda.application.book.BookAgendaError
 import com.codely.agenda.application.book.BookAgendaError.AgendaNotFound
 import com.codely.agenda.application.book.BookAgendaError.AvailableHourNotFound
+import com.codely.agenda.application.book.BookAgendaError.InvalidPlayerName
 import com.codely.agenda.application.book.BookAgendaError.InvalidUUID
 import com.codely.agenda.application.book.BookAgendaError.MaxCapacityReached
 import com.codely.agenda.application.book.BookAgendaError.PlayerAlreadyBooked
@@ -13,6 +14,7 @@ import com.codely.agenda.domain.AgendaRepository
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_IDENTIFIERS
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_PLAYER_NAME
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.MAX_CAPACITY_REACHED
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_ALREADY_BOOKED
 import com.codely.shared.cors.BaseController
@@ -49,5 +51,6 @@ class BookAgendaController(private val repository: AgendaRepository) : BaseContr
             is AgendaNotFound -> Response.status(NOT_FOUND).withBody(AGENDA_DOES_NOT_EXIST)
             is AvailableHourNotFound -> Response.status(NOT_FOUND).withBody(AVAILABLE_HOUR_DOES_NOT_EXIST)
             is InvalidUUID -> Response.status(BAD_REQUEST).withBody(INVALID_IDENTIFIERS)
+            is InvalidPlayerName -> Response.status(BAD_REQUEST).withBody(INVALID_PLAYER_NAME)
         }
 }

@@ -8,6 +8,7 @@ import com.codely.agenda.primaryadapter.rest.book.BookAgendaController
 import com.codely.agenda.primaryadapter.rest.book.BookAgendaDTO
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AGENDA_DOES_NOT_EXIST
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.AVAILABLE_HOUR_DOES_NOT_EXIST
+import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.INVALID_PLAYER_NAME
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.MAX_CAPACITY_REACHED
 import com.codely.agenda.primaryadapter.rest.error.AgendaServerErrors.USER_ALREADY_BOOKED
 import com.codely.shared.error.ServerError
@@ -17,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
@@ -114,6 +116,21 @@ class BookPlayingTimeTest {
         // Then
         assertEquals(NOT_FOUND, result.statusCode)
         assertEquals(ServerError.of(AVAILABLE_HOUR_DOES_NOT_EXIST), result.body)
+    }
+
+    @Test
+    fun `should fail if player name is empty`() = runTest {
+        // Given
+        val updatedAgenda = agenda.copy(availableHours = emptyList())
+        val emptyNameBody = requestBody.copy(playerName = "    ")
+        repository.save(updatedAgenda)
+
+        // When
+        val result = controller.bookAgenda(agenda.id.toString(), hourId.toString(), emptyNameBody)
+
+        // Then
+        assertEquals(BAD_REQUEST, result.statusCode)
+        assertEquals(ServerError.of(INVALID_PLAYER_NAME), result.body)
     }
 
     private val agenda = AgendaMother.tuesday()
