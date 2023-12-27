@@ -29,7 +29,6 @@ This is a repository intended to serve as a starting point if you want to bootst
 It could be useful if you want to start from scratch a kata or a little exercise or project. The idea is that you don't have to worry about the boilerplate
 * Latest stable kotlin version
 * Latest stable Springboot version
-* Latest stable Springboot version
 * Latest stable java version
 * Best practices applied
 * Some useful resources to start coding
