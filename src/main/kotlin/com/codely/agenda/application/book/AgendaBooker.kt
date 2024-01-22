@@ -5,6 +5,7 @@ import com.codely.agenda.application.book.BookAgendaError.AgendaNotFound
 import com.codely.agenda.domain.Agenda
 import com.codely.agenda.domain.AgendaFindByCriteria.ById
 import com.codely.agenda.domain.AgendaRepository
+import com.codely.agenda.domain.BookAgendaErrorDomain
 import com.codely.agenda.domain.Player
 import com.codely.agenda.domain.findOrElse
 import java.util.UUID
