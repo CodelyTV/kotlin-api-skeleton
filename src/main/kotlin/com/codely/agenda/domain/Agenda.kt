@@ -9,10 +9,10 @@ import com.codely.agenda.application.cancel.CancelBookingError
 import com.codely.agenda.application.cancel.CancelBookingError.PlayerNotBooked
 import com.codely.agenda.domain.HourType.MEMBERS_TIME
 import java.time.LocalDate
+import java.time.Month
 import java.time.temporal.WeekFields
 import java.util.Locale
 import java.util.UUID
-import kotlinx.datetime.Month
 
 data class Agenda(
     val id: UUID,
@@ -133,6 +133,10 @@ data class AvailableHour(
             AvailableHour(from = 17, to = 18, registeredPlayers = emptyList(), type = MEMBERS_TIME)
         )
     }
+}
+
+sealed class BookAgendaErrorDomain {
+    data object InvalidUUIDDomain : BookAgendaErrorDomain()
 }
 
 @JvmInline
