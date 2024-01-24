@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController
 class SearchRankingController(private val repository: LeagueRankingRepository): BaseController() {
 
     @GetMapping("/rankings")
-    fun search(@RequestParam league: String): Response<*> = runBlocking {
+    fun search(@RequestParam league: String, @RequestParam club: String): Response<*> = runBlocking {
         with(repository) {
-            handle(SearchLeagueRankingQuery(league))
+            handle(SearchLeagueRankingQuery(league, club))
                 ?.let { ranking -> Response.status(OK).body(ranking.toDocument()) }
                 ?: Response.status(NOT_FOUND).withBody(LEAGUE_RANKING_DOES_NOT_EXIST)
         }

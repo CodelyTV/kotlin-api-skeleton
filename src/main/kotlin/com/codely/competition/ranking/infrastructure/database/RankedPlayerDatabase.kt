@@ -1,20 +1,25 @@
 package com.codely.competition.ranking.infrastructure.database
 
+import com.codely.competition.clubs.domain.Club
 import com.codely.competition.ranking.domain.LeagueRanking
 import com.codely.competition.ranking.domain.League
 import com.codely.competition.ranking.domain.GameStats
 import com.codely.competition.ranking.domain.LeagueRankingRepository
 import com.codely.competition.ranking.domain.RankedPlayer
 import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria
-import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria.ByLeague
+import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria.ByLeagueAndClub
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 interface JpaLeagueRankingRepository : MongoRepository<LeagueRankingDocument, String> {
     fun deleteByName(name: String)
+
+    @Query("{ 'name' : ?0, 'players' : { '\$elemMatch' : { 'club' : ?1 } } }")
+    fun findByNameAndPlayersClub(name: String, club: String): LeagueRankingDocument?
     fun findByName(name: String): LeagueRankingDocument?
 }
 
@@ -84,6 +89,9 @@ class MongoLeagueRankingRepository(private val repository: JpaLeagueRankingRepos
     override suspend fun delete(league: League) { repository.deleteByName(league.name) }
     override suspend fun search(criteria: SearchLeagueRankingCriteria): LeagueRanking? =
         when(criteria) {
-            is ByLeague -> repository.findByName(criteria.league.name)
+            is ByLeagueAndClub -> repository.findByName(criteria.league.name).filterClub(criteria.club)
         }?.toLeagueRanking()
+
+    private fun LeagueRankingDocument?.filterClub(club: Club): LeagueRankingDocument? =
+        this?.copy(players = players.filter { it.club == club.name })
 }
