@@ -2,43 +2,49 @@ package com.codely.competition.ranking.application.update
 
 import com.codely.competition.clubs.domain.Club
 import com.codely.competition.clubs.domain.ClubRepository
-import com.codely.competition.players.domain.FindPlayerCriteria.ByClubAndName
+import com.codely.competition.players.application.create.BLACKLISTED_KEYWORDS
+import com.codely.competition.players.domain.FindPlayerCriteria.ByClubLeagueAndName
 import com.codely.competition.players.domain.PlayerRepository
+import com.codely.competition.ranking.domain.LeagueRanking
+import com.codely.competition.ranking.domain.League
 import com.codely.competition.ranking.domain.GameStats
+import com.codely.competition.ranking.domain.LeagueRankingRepository
 import com.codely.competition.ranking.domain.RankedPlayer
-import com.codely.competition.ranking.domain.RankedPlayerRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class RankingUpdater(
     private val playerRepository: PlayerRepository,
     private val clubRepository: ClubRepository,
-    private val rankedPlayerRepository: RankedPlayerRepository
+    private val leagueRankingRepository: LeagueRankingRepository
 ) {
     
-    suspend operator fun invoke(lines: List<String>) {
-        val clubs = clubRepository.search()
-            .map { it.name }
+    suspend operator fun invoke(lines: List<String>, league: League) = coroutineScope {
+        val sanitizedList = lines
+            .filter { line -> !BLACKLISTED_KEYWORDS.any { it in line } }
+            .filter { line -> line.isNotBlank() }
 
+        val clubs = clubRepository.search().map { it.name }
 
-        val playersFromOurGroup = lines
-            .filter { line -> clubs.any { it in line } }
-            .map { mapToPlayer(it, clubs) }
+        val rankedPlayers = sanitizedList
+            .map { async { mapToPlayer(it, clubs, league) }.await() }
 
-        playersFromOurGroup.map { rankedPlayerRepository.save(it) }
+        val leagueRanking = LeagueRanking.create(name = league, players = rankedPlayers)
+
+        leagueRankingRepository.delete(league)
+        leagueRankingRepository.save(leagueRanking)
     }
 
-    private suspend fun mapToPlayer(input: String, clubs: List<String>): RankedPlayer {
+    private suspend fun mapToPlayer(input: String, clubs: List<String>, league: League): RankedPlayer {
         val club = clubs.first { it in input }
         val playerName = findPlayerName(input, clubs)
-
-        val player = playerRepository.find(ByClubAndName(Club(club), playerName))
-
-        val updatedInput = input.formatInput(clubs)
-        val elements = updatedInput.split(" ")
+        val player = playerRepository.find(ByClubLeagueAndName(Club(club), league, playerName))
         
         return player?.let {
             val gameStats = findGameStats(input)
-            val ranking = elements[0].replace(player.id.toString(), "").toInt()
+            val ranking = input.split(" ")[0].replace(player.id.toString(), "").toInt()
             RankedPlayer(it.id, it.name, club, gameStats, ranking)
+                .also { ranked -> println("Player found, creating ranking $ranked") }
         } ?: createRankedPlayerFromData(input, club, playerName, clubs)
     }
     
@@ -89,7 +95,9 @@ class RankingUpdater(
     }
 
     private fun Pair<Int, Int>.gamesLost(): Int = this.first - this.second
+
     private fun findRankingAndId(input: String, winRate: Double): Pair<Long, Int> {
+        // TODO -> Replace with DB call
         val id = PLAYER_IDS_OVER_THOUSAND.find { it in input }
 
         if (winRate == 0.0) return Pair(input.takeLast(input.length - 2).toLong(), input.take(2).toInt())

@@ -1,26 +1,39 @@
 package com.codely.competition.ranking.infrastructure.database
 
-import com.codely.competition.players.domain.FindPlayerCriteria
-import com.codely.competition.players.domain.Player
-import com.codely.competition.players.domain.PlayerRepository
-import com.codely.competition.players.domain.SearchPlayerCriteria
-import com.codely.competition.players.infrastructure.database.JpaPlayerRepository
-import com.codely.competition.players.infrastructure.database.PlayerDocument
-import com.codely.competition.players.infrastructure.database.toDocument
+import com.codely.competition.ranking.domain.LeagueRanking
+import com.codely.competition.ranking.domain.League
 import com.codely.competition.ranking.domain.GameStats
+import com.codely.competition.ranking.domain.LeagueRankingRepository
 import com.codely.competition.ranking.domain.RankedPlayer
-import com.codely.competition.ranking.domain.RankedPlayerRepository
+import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria
+import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria.ByLeague
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.util.UUID
 
-interface JpaRankedPlayerRepository : MongoRepository<RankedPlayerDocument, Long>
+interface JpaLeagueRankingRepository : MongoRepository<LeagueRankingDocument, String> {
+    fun deleteByName(name: String)
+    fun findByName(name: String): LeagueRankingDocument?
+}
 
 @Document(collection = "Ranking")
-data class RankedPlayerDocument(
+data class LeagueRankingDocument(
     @Id
+    val id: String,
+    val name: String,
+    val players: List<RankedPlayerDocument>
+) {
+    fun toLeagueRanking(): LeagueRanking =
+        LeagueRanking(
+            id = UUID.fromString(id),
+            name = League.valueOf(name),
+            players = players.map { it.toRankedPlayer() }
+        )
+}
+
+data class RankedPlayerDocument(
     val id: Long,
     val name: String,
     val club: String,
@@ -47,6 +60,13 @@ data class GameStatsDocument(
         GameStats(gamesPlayed = gamesPlayed, gamesWon = gamesWon, gamesLost = gamesLost, winRate = winRate)
 }
 
+internal fun LeagueRanking.toDocument(): LeagueRankingDocument =
+    LeagueRankingDocument(
+        id = id.toString(),
+        name = name.name,
+        players = players.map { it.toDocument() }
+    )
+
 internal fun RankedPlayer.toDocument(): RankedPlayerDocument =
     RankedPlayerDocument(
         id = id,
@@ -59,6 +79,11 @@ internal fun GameStats.toDocument(): GameStatsDocument =
     GameStatsDocument(gamesPlayed = gamesPlayed, gamesWon = gamesWon, gamesLost = gamesLost, winRate = winRate)
 
 @Component
-class MongoRankedPlayerRepository(private val repository: JpaRankedPlayerRepository): RankedPlayerRepository {
-    override suspend fun save(player: RankedPlayer) { repository.save(player.toDocument()) }
+class MongoLeagueRankingRepository(private val repository: JpaLeagueRankingRepository): LeagueRankingRepository {
+    override suspend fun save(ranking: LeagueRanking) { repository.save(ranking.toDocument()) }
+    override suspend fun delete(league: League) { repository.deleteByName(league.name) }
+    override suspend fun search(criteria: SearchLeagueRankingCriteria): LeagueRanking? =
+        when(criteria) {
+            is ByLeague -> repository.findByName(criteria.league.name)
+        }?.toLeagueRanking()
 }

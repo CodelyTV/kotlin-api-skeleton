@@ -4,42 +4,41 @@ import com.codely.competition.clubs.application.create.ClubsCreator
 import com.codely.competition.clubs.domain.ClubRepository
 import com.codely.competition.players.domain.Player
 import com.codely.competition.players.domain.PlayerRepository
-import kotlinx.coroutines.runBlocking
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.text.PDFTextStripper
+import com.codely.competition.ranking.domain.League
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.springframework.stereotype.Component
-import java.io.File
 
 data class UpdatePlayerCommand(
-    val playerListText: List<String>
+    val playerListText: List<String>,
+    val league: String
 )
 
 @Component
 class UpdatePlayersCommandHandler(
-    private val repository: PlayerRepository,
+    repository: PlayerRepository,
     clubRepository: ClubRepository
 ) {
 
     private val createClubs = ClubsCreator(clubRepository)
+    private val createPlayers = PlayerCreator(repository)
 
-    fun handle(command: UpdatePlayerCommand) = runBlocking {
+    suspend fun handle(command: UpdatePlayerCommand) = coroutineScope {
         val sanitizedList = command.playerListText.subList(4, command.playerListText.size)
-
-        val clubs = sanitizedList
-            .filter { it.isNotEmpty() && !it.first().isDigit() }
             .filter { line -> !BLACKLISTED_KEYWORDS.any { it in line } }
 
-        val groupedPlayers = groupByClub(
-            sanitizedList.filter { line -> !BLACKLISTED_KEYWORDS.any { it in line } }, clubs
-        )
+        val league = League.valueOf(command.league)
 
-        groupedPlayers.values
-            .map { clubPlayers -> clubPlayers.map { repository.save(it) } }
+        val clubs = sanitizedList.filter { it.isNotEmpty() && !it.first().isDigit() }
+        val groupedPlayers = groupByClub(sanitizedList, clubs, league)
 
+        groupedPlayers.values.map { clubPlayers -> launch { createPlayers(clubPlayers) }.join() }
         createClubs(clubs)
     }
 
-    private fun groupByClub(inputList: List<String>, clubNames: List<String>): Map<String, List<Player>> {
+    private fun groupByClub(inputList: List<String>, clubNames: List<String>, league: League): Map<String, List<Player>> {
         val result = mutableMapOf<String, MutableList<Player>>()
         var currentClubName = ""
 
@@ -48,7 +47,7 @@ class UpdatePlayersCommandHandler(
                 currentClubName = input
                 result[currentClubName] = mutableListOf()
             } else if (currentClubName.isNotEmpty() && input.isNotBlank()) {
-                val player = mapToPlayer(input, currentClubName)
+                val player = mapToPlayer(input, currentClubName, league)
                 result[currentClubName]?.add(player)
             }
         }
@@ -56,7 +55,7 @@ class UpdatePlayersCommandHandler(
         return result
     }
 
-    private fun mapToPlayer(input: String, clubName: String): Player {
+    private fun mapToPlayer(input: String, clubName: String, league: League): Player {
         return input.split(" ")
             .let { elements ->
                 Player.create(
@@ -64,7 +63,8 @@ class UpdatePlayersCommandHandler(
                     name = "${elements[2]} ${elements[1]}".uppercase(),
                     club = clubName,
                     initialRanking = elements.getInitialRanking().toInt(),
-                    promotedToHigherLeagues = LEAGUE_KEYWORDS.any { it in elements.last() }
+                    league = league,
+                    promotedToHigherLeagues = League.parseNames().any { it in elements.last() }
                 )
             }
     }
@@ -72,7 +72,7 @@ class UpdatePlayersCommandHandler(
     private fun List<String>.getInitialRanking(): String {
         val last = last()
         return when {
-            LEAGUE_KEYWORDS.any { it in last } -> get(size - 2).removeInscriptionDate()
+            League.parseNames().any { it in last } -> get(size - 2).removeInscriptionDate()
             last.contains("/") -> last.removeInscriptionDate()
             else -> last()
         }
@@ -83,13 +83,14 @@ class UpdatePlayersCommandHandler(
             contains("/") -> removeRange(this.length - 8, this.length)
             else -> this
         }
-
-    private val BLACKLISTED_KEYWORDS = listOf(
-        "Representació Territorial",
-        "Federació Catalana",
-        "C/Duquessa d'Orleans",
-        "RK Inicial",
-
-    )
-    private val LEAGUE_KEYWORDS = listOf("PREF", "1a", "2aA", "2aB", "3aA", "3aB")
 }
+
+val BLACKLISTED_KEYWORDS = listOf(
+    "Representació Territorial",
+    "Federació Catalana",
+    "C/Duquessa d'Orleans",
+    "RK Inicial",
+    "Rànquing Actualitzat",
+    "Només es mostren els jugadors que han disputat més de 4 partits i que no han pujat de categoria. A l'absolut hi són tots",
+    "PuntsPGPJ PP % JG JP %"
+)

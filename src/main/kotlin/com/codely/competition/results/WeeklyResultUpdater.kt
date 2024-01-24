@@ -1,13 +1,34 @@
 package com.codely.competition.results
 
+import com.codely.competition.calendar.Calendar
+import com.codely.competition.calendar.Match
+import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubRepository
+import kotlinx.coroutines.runBlocking
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
+import org.springframework.core.io.ClassPathResource
+import org.springframework.stereotype.Component
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.time.ZonedDateTime
+import java.util.*
 
-object WeeklyResultUpdater {
+//@Component
+class WeeklyResultUpdater(
+    private val clubRepository: ClubRepository
+) {
 
-    fun processCalendarPDF(pdfFile: File) {
-        val pdDocument = PDDocument.load(pdfFile)
+//    @EventListener(ApplicationReadyEvent::class)
+    fun processCalendarPDF() = runBlocking {
+        val calendarPdfResource = ClassPathResource("/pdf/calendari-3A.pdf")
+        val tempCalendarPdfFile = Files.createTempFile("temp-pdf-calendari-3A", ".pdf").toFile()
+        Files.copy(calendarPdfResource.inputStream, tempCalendarPdfFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+
+        val pdDocument = PDDocument.load(tempCalendarPdfFile)
         val textStripper = PDFTextStripper()
         val text = textStripper.getText(pdDocument)
 
@@ -18,17 +39,33 @@ object WeeklyResultUpdater {
                 .map { it.replace(Regex("[0-9]"), "").trim() }
 
         val weekEndResults = splitList
-            .subList(leagueStandings.size + 18, splitList.size)
+            .subList(leagueStandings.size + 6, splitList.size)
             .getResultsFrom(leagueStandings)
 
+        weekEndResults.forEach { key, value ->
+            Calendar(
+                id = UUID.randomUUID(),
+                name = key,
+                matches = value
+                    .map {
+                        Match(
+                            localClub = Club(name = ""),
+                            visitorClub = Club(name = ""),
+                            result = null,
+                            dateTime = ZonedDateTime.now()
+                        )
+                    }
+
+            )
+        }
         pdDocument.close()
     }
 
-    private fun List<String>.getResultsFrom(teams: List<String>): Map<String, List<String>> {
-        val result = mutableMapOf<String, List<String>>()
+    private suspend fun List<String>.getResultsFrom(teams: List<String>): Map<String, List<Match>> {
+        val result = mutableMapOf<String, List<Match>>()
 
         var currentKey: String? = null
-        var currentList: MutableList<String>? = null
+        var currentList: MutableList<Match>? = null
 
         for (line in this) {
             val matchResult = Regex("(\\d*)Jornada Acta").find(line)
@@ -47,7 +84,9 @@ object WeeklyResultUpdater {
                 currentList = mutableListOf()
             } else if (teams.any { it in line }) {
                 // Add lines to the current list
-                currentList?.add(createFinalLine(line))
+                val finalLine = createFinalLine(line)
+                val match = finalLine.toMatch()
+                currentList?.add(match)
             }
         }
 
@@ -64,5 +103,20 @@ object WeeklyResultUpdater {
     private fun createFinalLine(line: String): String {
         val x = line.removeRange(0, 8)
         return x.removeRange(x.length - 9, x.length).trim()
+    }
+
+    private suspend fun String.toMatch(): Match {
+        val clubs = clubRepository.search().map { it.name }
+
+        val club1 = clubs.last { it in this }
+        val club2 = clubs.first { it in this }
+
+        val localClub = clubs.minByOrNull { this.indexOf(it) } ?: "N/A"
+        return Match(
+            localClub = Club(name = localClub),
+            visitorClub = Club(name = ""),
+            result = null,
+            dateTime = ZonedDateTime.now()
+        )
     }
 }

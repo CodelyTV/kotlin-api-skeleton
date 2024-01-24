@@ -2,9 +2,10 @@ package com.codely.competition.players.infrastructure.database
 
 import com.codely.competition.clubs.domain.Club
 import com.codely.competition.players.domain.*
-import com.codely.competition.players.domain.FindPlayerCriteria.ByClubAndName
+import com.codely.competition.players.domain.FindPlayerCriteria.ByClubLeagueAndName
 import com.codely.competition.players.domain.FindPlayerCriteria.ById
 import com.codely.competition.players.domain.SearchPlayerCriteria.ByClub
+import com.codely.competition.ranking.domain.League
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component
 
 interface JpaPlayerRepository : MongoRepository<PlayerDocument, Long> {
     fun findAllByClub(club: String): List<PlayerDocument>
-    fun findByClubAndNameContaining(club: String, name: String): PlayerDocument?
+    fun findByClubAndInitialLeagueAndNameContaining(club: String, league: String, name: String): PlayerDocument?
 }
 
 @Document(collection = "Players")
@@ -23,6 +24,7 @@ data class PlayerDocument(
     val name: String,
     val club: String,
     val initialRanking: Int,
+    val initialLeague: String,
     val promotedToHigherLeagues: Boolean
 ) {
     fun toPlayer(): Player =
@@ -31,6 +33,7 @@ data class PlayerDocument(
             name = name,
             club = Club(name = club),
             initialRanking = initialRanking,
+            initialLeague = League.valueOf(initialLeague),
             promotedToHigherLeagues = promotedToHigherLeagues
         )
 }
@@ -41,6 +44,7 @@ internal fun Player.toDocument(): PlayerDocument =
         name = name,
         club = club.name,
         initialRanking = initialRanking,
+        initialLeague = initialLeague.name,
         promotedToHigherLeagues = promotedToHigherLeagues
     )
 
@@ -51,11 +55,16 @@ class MongoPlayerRepository(private val repository: JpaPlayerRepository): Player
     override suspend fun find(criteria: FindPlayerCriteria): Player? =
         when(criteria) {
             is ById -> repository.findByIdOrNull(criteria.id)
-            is ByClubAndName -> repository.findByClubAndNameContaining(criteria.club.name, criteria.name)
+            is ByClubLeagueAndName -> repository.findByClubAndInitialLeagueAndNameContaining(criteria.club.name, criteria.league.name, criteria.name)
         }?.toPlayer()
 
     override suspend fun search(criteria: SearchPlayerCriteria): List<Player> =
         when(criteria) {
             is ByClub -> repository.findAllByClub(criteria.club.name)
         }.map { it.toPlayer() }
+
+    override suspend fun exists(criteria: ExistsPlayerCriteria): Boolean =
+        when(criteria) {
+            is ExistsPlayerCriteria.ById -> repository.existsById(criteria.id)
+        }
 }

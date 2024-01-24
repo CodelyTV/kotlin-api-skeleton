@@ -24,4 +24,5 @@ class MongoClubDatabase(private val repository: JpaClubRepository): ClubReposito
 
     override suspend fun save(club: Club) { repository.save(club.toDocument()) }
     override suspend fun search(): List<Club> = repository.findAll().map { it.toClub() }
+    override suspend fun exists(club: Club): Boolean = repository.existsById(club.name)
 }
