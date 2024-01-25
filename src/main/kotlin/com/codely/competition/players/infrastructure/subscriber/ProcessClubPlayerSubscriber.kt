@@ -20,7 +20,7 @@ class ProcessClubPlayerSubscriber(
 ) {
     private val textStripper = PDFTextStripper()
 
-    @EventListener(ApplicationReadyEvent::class)
+//    @EventListener(ApplicationReadyEvent::class)
     fun invoke() = runBlocking {
         val (preferente, primera, segundaA, segundaB, terceraA, terceraB) = configuration
         val ligas = listOf(preferente, primera, segundaA, segundaB, terceraA, terceraB)

@@ -25,6 +25,4 @@ class SearchClubController(private val repository: ClubRepository): BaseControll
 }
 
 data class ClubDocument(val clubs: List<String>)
-
-internal fun List<Club>.toDocument() =
-    ClubDocument(this.map { it.clubName.value })
+internal fun List<Club>.toDocument() = ClubDocument(this.map { it.clubName.value })

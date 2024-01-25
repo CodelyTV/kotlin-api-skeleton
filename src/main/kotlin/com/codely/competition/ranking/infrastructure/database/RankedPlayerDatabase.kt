@@ -1,20 +1,14 @@
 package com.codely.competition.ranking.infrastructure.database
 
-import com.codely.competition.clubs.domain.Club
 import com.codely.competition.clubs.domain.ClubName
-import com.codely.competition.ranking.domain.LeagueRanking
-import com.codely.competition.ranking.domain.League
-import com.codely.competition.ranking.domain.GameStats
-import com.codely.competition.ranking.domain.LeagueRankingRepository
-import com.codely.competition.ranking.domain.RankedPlayer
-import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria
+import com.codely.competition.ranking.domain.*
 import com.codely.competition.ranking.domain.SearchLeagueRankingCriteria.ByLeagueAndClub
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Component
-import java.util.UUID
+import java.util.*
 
 interface JpaLeagueRankingRepository : MongoRepository<LeagueRankingDocument, String> {
     fun deleteByName(name: String)

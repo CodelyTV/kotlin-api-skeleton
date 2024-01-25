@@ -5,6 +5,7 @@ import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.clubs.domain.ClubRepository
 import com.codely.competition.clubs.domain.SearchClubCriteria
 import com.codely.competition.clubs.domain.SearchClubCriteria.All
+import com.codely.competition.clubs.domain.SearchClubCriteria.ByLeague
 import com.codely.competition.players.application.create.BLACKLISTED_KEYWORDS
 import com.codely.competition.players.domain.FindPlayerCriteria.ByClubLeagueAndName
 import com.codely.competition.players.domain.PlayerRepository
@@ -27,7 +28,7 @@ class RankingUpdater(
             .filter { line -> !BLACKLISTED_KEYWORDS.any { it in line } }
             .filter { line -> line.isNotBlank() }
 
-        val clubs = clubRepository.search(All).map { it.clubName.value }
+        val clubs = clubRepository.search(ByLeague(league)).map { it.clubName.value }
 
         val rankedPlayers = sanitizedList
             .map { async { mapToPlayer(it, clubs, league) }.await() }
@@ -46,7 +47,7 @@ class RankingUpdater(
         return player?.let {
             val gameStats = findGameStats(input)
             val ranking = input.split(" ")[0].replace(player.id.toString(), "").toInt()
-            RankedPlayer(it.id, it.name, club, gameStats, ranking)
+            RankedPlayer(it.id, it.name, it.clubName.value, gameStats, ranking)
                 .also { ranked -> println("Player found, creating ranking $ranked") }
         } ?: createRankedPlayerFromData(input, club, playerName, clubs)
     }

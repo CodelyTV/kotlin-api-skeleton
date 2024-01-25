@@ -32,12 +32,11 @@ class UpdatePlayersCommandHandler(
 
         val clubs = sanitizedList.filter { it.isNotEmpty() && !it.first().isDigit() }
 
-//        val groupedPlayers = groupByClub(sanitizedList, clubs, league)
-
-//        groupedPlayers.values.map { clubPlayers -> launch { createPlayers(clubPlayers) }.join() }
+        val groupedPlayers = groupByClub(sanitizedList, clubs, league)
+        groupedPlayers.values.map { clubPlayers -> launch { createPlayers(clubPlayers) }.join() }
 
         val x = clubs.map { ClubName(it) }
-//        createClubs(x, league)
+        createClubs(x, league)
     }
 
     private fun groupByClub(inputList: List<String>, clubNames: List<String>, league: League): Map<String, List<Player>> {

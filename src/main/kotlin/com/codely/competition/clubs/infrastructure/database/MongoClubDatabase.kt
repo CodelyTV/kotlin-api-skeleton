@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Component
+import java.util.*
 
 interface JpaClubRepository : MongoRepository<ClubDocument, String> {
     fun existsByNameAndLeague(name: String, league: String): Boolean
@@ -18,13 +19,14 @@ interface JpaClubRepository : MongoRepository<ClubDocument, String> {
 @Document(collection = "Clubs")
 data class ClubDocument(
     @Id
+    val id: String,
     val name: String,
     val league: String
 ) {
-    fun toClub(): Club = Club(ClubName(name), League.valueOf(league))
+    fun toClub(): Club = Club(ClubName(name), League.valueOf(league), id = UUID.fromString(id))
 }
 
-internal fun Club.toDocument(): ClubDocument = ClubDocument(clubName.value, league.name)
+internal fun Club.toDocument(): ClubDocument = ClubDocument(id.toString(), clubName.value, league.name)
 
 @Component
 class MongoClubDatabase(private val repository: JpaClubRepository): ClubRepository {
