@@ -1,6 +1,6 @@
 package com.codely.competition.ranking.domain
 
-import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 
 interface LeagueRankingRepository {
     suspend fun save(ranking: LeagueRanking)
@@ -9,5 +9,5 @@ interface LeagueRankingRepository {
 }
 
 sealed interface SearchLeagueRankingCriteria {
-    class ByLeagueAndClub(val league: League, val club: Club): SearchLeagueRankingCriteria
+    class ByLeagueAndClub(val league: League, val clubName: ClubName): SearchLeagueRankingCriteria
 }

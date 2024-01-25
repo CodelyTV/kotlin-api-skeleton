@@ -1,8 +1,8 @@
 package com.codely.competition.calendar
 
-import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 data class Calendar(
     val id: UUID,
@@ -11,14 +11,14 @@ data class Calendar(
 )
 
 data class Match(
-    val localClub: Club,
-    val visitorClub: Club,
+    val localClub: ClubName,
+    val visitorClub: ClubName,
     val result: Result?,
     val dateTime: ZonedDateTime
 )
 
 data class Result(
-    val winner: Club,
+    val winner: ClubName,
     val winnerGames: Int,
     val loserGames: Int
 )

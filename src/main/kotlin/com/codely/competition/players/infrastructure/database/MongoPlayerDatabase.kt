@@ -1,6 +1,6 @@
 package com.codely.competition.players.infrastructure.database
 
-import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.players.domain.*
 import com.codely.competition.players.domain.FindPlayerCriteria.ByClubLeagueAndName
 import com.codely.competition.players.domain.FindPlayerCriteria.ById
@@ -31,7 +31,7 @@ data class PlayerDocument(
         Player(
             id = id,
             name = name,
-            club = Club(name = club),
+            clubName = ClubName(club),
             initialRanking = initialRanking,
             initialLeague = League.valueOf(initialLeague),
             promotedToHigherLeagues = promotedToHigherLeagues
@@ -42,7 +42,7 @@ internal fun Player.toDocument(): PlayerDocument =
     PlayerDocument(
         id = id,
         name = name,
-        club = club.name,
+        club = clubName.value,
         initialRanking = initialRanking,
         initialLeague = initialLeague.name,
         promotedToHigherLeagues = promotedToHigherLeagues
@@ -55,12 +55,12 @@ class MongoPlayerRepository(private val repository: JpaPlayerRepository): Player
     override suspend fun find(criteria: FindPlayerCriteria): Player? =
         when(criteria) {
             is ById -> repository.findByIdOrNull(criteria.id)
-            is ByClubLeagueAndName -> repository.findByClubAndInitialLeagueAndNameContaining(criteria.club.name, criteria.league.name, criteria.name)
+            is ByClubLeagueAndName -> repository.findByClubAndInitialLeagueAndNameContaining(criteria.club.value, criteria.league.name, criteria.name)
         }?.toPlayer()
 
     override suspend fun search(criteria: SearchPlayerCriteria): List<Player> =
         when(criteria) {
-            is ByClub -> repository.findAllByClub(criteria.club.name)
+            is ByClub -> repository.findAllByClub(criteria.club.value)
         }.map { it.toPlayer() }
 
     override suspend fun exists(criteria: ExistsPlayerCriteria): Boolean =

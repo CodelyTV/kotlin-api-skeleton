@@ -3,15 +3,14 @@ package com.codely.competition.results
 import com.codely.competition.calendar.Calendar
 import com.codely.competition.calendar.Match
 import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.clubs.domain.ClubRepository
+import com.codely.competition.clubs.domain.SearchClubCriteria
+import com.codely.competition.clubs.domain.SearchClubCriteria.All
 import kotlinx.coroutines.runBlocking
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.event.EventListener
 import org.springframework.core.io.ClassPathResource
-import org.springframework.stereotype.Component
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.time.ZonedDateTime
@@ -49,8 +48,8 @@ class WeeklyResultUpdater(
                 matches = value
                     .map {
                         Match(
-                            localClub = Club(name = ""),
-                            visitorClub = Club(name = ""),
+                            localClub = ClubName(""),
+                            visitorClub = ClubName(""),
                             result = null,
                             dateTime = ZonedDateTime.now()
                         )
@@ -106,15 +105,15 @@ class WeeklyResultUpdater(
     }
 
     private suspend fun String.toMatch(): Match {
-        val clubs = clubRepository.search().map { it.name }
+        val clubs = clubRepository.search(All).map { it.clubName.value }
 
         val club1 = clubs.last { it in this }
         val club2 = clubs.first { it in this }
 
         val localClub = clubs.minByOrNull { this.indexOf(it) } ?: "N/A"
         return Match(
-            localClub = Club(name = localClub),
-            visitorClub = Club(name = ""),
+            localClub = ClubName(localClub),
+            visitorClub = ClubName(""),
             result = null,
             dateTime = ZonedDateTime.now()
         )

@@ -1,12 +1,12 @@
 package com.codely.competition.players.domain
 
-import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.ranking.domain.League
 
 data class Player(
     val id: PlayerId,
     val name: String,
-    val club: Club,
+    val clubName: ClubName,
     val initialRanking: Ranking,
     val initialLeague: League,
     val promotedToHigherLeagues: Boolean
@@ -19,7 +19,7 @@ data class Player(
             initialRanking: Int,
             league: League,
             promotedToHigherLeagues: Boolean
-        ) = Player(id, name, Club(club), initialRanking, league, promotedToHigherLeagues)
+        ) = Player(id, name, ClubName(club), initialRanking, league, promotedToHigherLeagues)
     }
 }
 
