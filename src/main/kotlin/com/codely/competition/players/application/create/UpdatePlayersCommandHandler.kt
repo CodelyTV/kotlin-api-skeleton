@@ -2,11 +2,10 @@ package com.codely.competition.players.application.create
 
 import com.codely.competition.clubs.application.create.ClubsCreator
 import com.codely.competition.clubs.domain.ClubRepository
+import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.players.domain.Player
 import com.codely.competition.players.domain.PlayerRepository
 import com.codely.competition.ranking.domain.League
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.springframework.stereotype.Component
@@ -32,10 +31,13 @@ class UpdatePlayersCommandHandler(
         val league = League.valueOf(command.league)
 
         val clubs = sanitizedList.filter { it.isNotEmpty() && !it.first().isDigit() }
-        val groupedPlayers = groupByClub(sanitizedList, clubs, league)
 
-        groupedPlayers.values.map { clubPlayers -> launch { createPlayers(clubPlayers) }.join() }
-        createClubs(clubs)
+//        val groupedPlayers = groupByClub(sanitizedList, clubs, league)
+
+//        groupedPlayers.values.map { clubPlayers -> launch { createPlayers(clubPlayers) }.join() }
+
+        val x = clubs.map { ClubName(it) }
+//        createClubs(x, league)
     }
 
     private fun groupByClub(inputList: List<String>, clubNames: List<String>, league: League): Map<String, List<Player>> {

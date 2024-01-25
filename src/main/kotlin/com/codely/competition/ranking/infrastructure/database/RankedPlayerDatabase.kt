@@ -1,6 +1,7 @@
 package com.codely.competition.ranking.infrastructure.database
 
 import com.codely.competition.clubs.domain.Club
+import com.codely.competition.clubs.domain.ClubName
 import com.codely.competition.ranking.domain.LeagueRanking
 import com.codely.competition.ranking.domain.League
 import com.codely.competition.ranking.domain.GameStats
@@ -89,9 +90,9 @@ class MongoLeagueRankingRepository(private val repository: JpaLeagueRankingRepos
     override suspend fun delete(league: League) { repository.deleteByName(league.name) }
     override suspend fun search(criteria: SearchLeagueRankingCriteria): LeagueRanking? =
         when(criteria) {
-            is ByLeagueAndClub -> repository.findByName(criteria.league.name).filterClub(criteria.club)
+            is ByLeagueAndClub -> repository.findByName(criteria.league.name).filterClub(criteria.clubName)
         }?.toLeagueRanking()
 
-    private fun LeagueRankingDocument?.filterClub(club: Club): LeagueRankingDocument? =
-        this?.copy(players = players.filter { it.club == club.name })
+    private fun LeagueRankingDocument?.filterClub(name: ClubName): LeagueRankingDocument? =
+        this?.copy(players = players.filter { it.club == name.value })
 }
